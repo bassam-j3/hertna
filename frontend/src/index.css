@@ -1,0 +1,206 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/container-queries";
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  /* Colors */
+  --color-surface-container-lowest: #ffffff;
+  --color-on-secondary: #ffffff;
+  --color-on-surface-variant: #40493d;
+  --color-on-secondary-container: #5e2c00;
+  --color-primary-fixed: #a3f69c;
+  --color-secondary-container: #fc820c;
+  --color-primary-fixed-dim: #88d982;
+  --color-surface-container-high: #e5eadf;
+  --color-surface-tint: #1b6d24;
+  --color-secondary-fixed: #ffdcc6;
+  --color-on-tertiary: #ffffff;
+  --color-secondary-fixed-dim: #ffb786;
+  --color-outline: #707a6c;
+  --color-surface-dim: #d7dbd2;
+  --color-tertiary-container: #b14b6f;
+  --color-surface-bright: #f7fbf0;
+  --color-on-tertiary-fixed-variant: #7f2448;
+  --color-on-surface: #181d17;
+  --color-surface: #f7fbf0;
+  --color-on-primary: #ffffff;
+  --color-tertiary: #923357;
+  --color-on-primary-fixed: #002204;
+  --color-on-primary-fixed-variant: #005312;
+  --color-primary: #0d631b;
+  --color-primary-container: #2e7d32;
+  --color-inverse-surface: #2d322b;
+  --color-on-error-container: #93000a;
+  --color-on-secondary-fixed-variant: #723600;
+  --color-outline-variant: #bfcaba;
+  --color-on-primary-container: #cbffc2;
+  --color-surface-variant: #e0e4da;
+  --color-on-background: #181d17;
+  --color-surface-container: #ebefe5;
+  --color-surface-container-low: #f1f5eb;
+  --color-error-container: #ffdad6;
+  --color-background: #f7fbf0;
+  --color-inverse-primary: #88d982;
+  --color-secondary: #964900;
+  --color-on-error: #ffffff;
+  --color-inverse-on-surface: #eef2e8;
+  --color-surface-container-highest: #e0e4da;
+  --color-on-tertiary-fixed: #3f001c;
+  --color-on-secondary-fixed: #311300;
+  --color-on-tertiary-container: #ffedf0;
+  --color-error: #ba1a1a;
+  --color-tertiary-fixed: #ffd9e2;
+  --color-tertiary-fixed-dim: #ffb1c7;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-gutter: 16px;
+  --spacing-container-margin: 20px;
+  --spacing-unit: 4px;
+
+  /* Typography */
+  --font-body: "Cairo", sans-serif;
+  --font-label-lg: "Cairo", sans-serif;
+  --font-display-lg: "Cairo", sans-serif;
+  --font-body-md: "Cairo", sans-serif;
+  --font-label-sm: "Cairo", sans-serif;
+  --font-body-lg: "Cairo", sans-serif;
+  --font-display-md: "Cairo", sans-serif;
+  --font-title-md: "Cairo", sans-serif;
+  --font-title-lg: "Cairo", sans-serif;
+  --font-display-lg-mobile: "Cairo", sans-serif;
+
+  --text-label-lg: 14px;
+  --text-label-lg--line-height: 1.2;
+  --text-label-lg--font-weight: 500;
+
+  --text-display-lg: 32px;
+  --text-display-lg--line-height: 1.2;
+  --text-display-lg--font-weight: 700;
+
+  --text-body-md: 14px;
+  --text-body-md--line-height: 1.6;
+  --text-body-md--font-weight: 400;
+
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 1.2;
+  --text-label-sm--font-weight: 500;
+
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 1.6;
+  --text-body-lg--font-weight: 400;
+
+  --text-display-md: 24px;
+  --text-display-md--line-height: 1.3;
+  --text-display-md--font-weight: 700;
+
+  --text-title-md: 18px;
+  --text-title-md--line-height: 1.5;
+  --text-title-md--font-weight: 500;
+
+  --text-title-lg: 20px;
+  --text-title-lg--line-height: 1.4;
+  --text-title-lg--font-weight: 700;
+
+  --text-display-lg-mobile: 28px;
+  --text-display-lg-mobile--line-height: 1.2;
+  --text-display-lg-mobile--font-weight: 700;
+}
+
+@layer base {
+  body {
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-on-background);
+    @apply dark:bg-[#0a0a0a] dark:text-slate-100;
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.material-symbols-outlined.fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Hide scrollbars for clean chip sliders */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* =============================================
+   إصلاح تنسيقات النوافذ المنبثقة (Modals)
+   ============================================= */
+.fixed.inset-0 {
+  width: 100vw !important;
+  height: 100vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  /* خلفية معتمة */
+  backdrop-filter: blur(8px) !important;
+  /* تأثير ضبابي */
+  z-index: 9999 !important;
+}
+
+/* تأكيد أن المحتوى الداخلي للنافذة له عرض وعرض أقصى */
+div[class*="Modal"]>div,
+.fixed.inset-0>div {
+  width: 90% !important;
+  max-width: 500px !important;
+  /* أقصى عرض للنافذة */
+  background-color: #ffffff !important;
+  border-radius: 16px !important;
+  padding: 24px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  margin: 0 auto !important;
+  height: auto !important;
+  max-height: 90vh !important;
+  /* منعها من الخروج عن الشاشة */
+  overflow-y: auto !important;
+}
+
+/* Map Modal override for responsiveness and centering */
+.map-modal-container {
+  width: 90vw !important;
+  max-width: 1200px !important;
+  height: 90vh !important;
+  max-height: 90vh !important;
+  padding: 0 !important;
+  display: flex !important;
+}
+
+/* إصلاح لتجاوز مشكلة العرض عند عرضها على شاشات صغيرة جداً */
+@media (max-width: 640px) {
+
+  div[class*="Modal"]>div,
+  .fixed.inset-0>div {
+    width: 95% !important;
+    max-width: 100% !important;
+    margin: 0 16px !important;
+  }
+}
+
+/* FORCE KILL ALL TRANSITIONS ON MAP MARKERS TO PREVENT PANNING LAG */
+.maplibregl-marker, 
+.maplibregl-marker *,
+.custom-map-pin,
+.map-pin {
+    transition: none !important;
+    animation: none !important;
+    transform-style: flat !important;
+}

@@ -1,0 +1,6 @@
+{
+  "name": "حارتنا - Haretna",
+  "description": "منصة التكافل والتبادل والتعاون المحلي بين أهالي الحي",
+  "requestFramePermissions": ["geolocation", "camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

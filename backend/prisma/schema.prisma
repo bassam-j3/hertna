@@ -1,0 +1,211 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PostType {
+  OFFER
+  REQUEST
+}
+
+enum InitiativeCategory {
+  CLEANUP
+  FOOD
+  MAINTENANCE
+  CHARITY
+  GENERAL
+}
+
+enum InitiativeStatus {
+  UPCOMING
+  ACTIVE
+  COMPLETED
+}
+
+enum SwapActionType {
+  CONFIRM_RECEIPT
+  MESSAGE
+}
+
+enum NotificationType {
+  REQUEST
+  SYSTEM
+  APPROVAL
+  URGENT
+}
+
+model User {
+  id               String                  @id @default(uuid())
+  email            String                  @unique
+  passwordHash     String
+  name             String
+  avatar           String?
+  neighborhood     String                  @default("حي الروضة")
+  city             String                  @default("دمشق")
+  phone            String?                 @unique
+  bio              String?
+  lat              Float?
+  lng              Float?
+  isVerified       Boolean                 @default(true)
+  joinedDate       DateTime                @default(now())
+  trustPoints      Int                     @default(120)
+  helpsGiven       Int                     @default(14)
+  status           String                  @default("active")
+  warnings         Int                     @default(0)
+  userType         String                  @default("user")
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  posts            Post[]
+  asBorrowerSwaps  SwapItem[]              @relation("BorrowerSwaps")
+  asLenderSwaps    SwapItem[]              @relation("LenderSwaps")
+  organizedInits   CommunityInitiative[]   @relation("OrganizedInitiatives")
+  joinedInits      InitiativeParticipant[]
+  givenRatings     Rating[]                @relation("GivenRatings")
+  receivedRatings  Rating[]                @relation("ReceivedRatings")
+  notifications    Notification[]
+  itemAlerts       ItemAlert[]
+  favorites        Favorite[]
+  tickets          SupportTicket[]         @relation("UserTickets")
+  @@map("users")
+}
+
+model SupportTicket {
+  id        String   @id @default(uuid())
+  type      String
+  message   String   @db.Text
+  status    String   @default("open")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation("UserTickets", fields: [userId], references: [id], onDelete: Cascade)
+  @@map("support_tickets")
+}
+
+model Post {
+  id           String      @id @default(uuid())
+  title        String
+  description  String      @db.Text
+  category     String
+  type         PostType    @default(OFFER)
+  urgent       Boolean     @default(false)
+  distanceKm   Float       @default(0.5)
+  location     String
+  lat          Float?
+  lng          Float?
+  image        String?
+  isAnonymous  Boolean     @default(false)
+  tags         String[]    @default([])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  swapItems    SwapItem[]
+  favorites    Favorite[]
+  @@map("posts")
+}
+
+model SwapItem {
+  id               String         @id @default(uuid())
+  title            String
+  image            String?
+  startDate        DateTime
+  dueDate          DateTime
+  actionType       SwapActionType @default(MESSAGE)
+  status           String         @default("active") 
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  postId           String?
+  post             Post?          @relation(fields: [postId], references: [id], onDelete: SetNull)
+  borrowerId       String
+  borrower         User           @relation("BorrowerSwaps", fields: [borrowerId], references: [id], onDelete: Cascade)
+  lenderId         String
+  lender           User           @relation("LenderSwaps", fields: [lenderId], references: [id], onDelete: Cascade)
+  ratings          Rating[]
+  @@map("swap_items")
+}
+
+model CommunityInitiative {
+  id               String                  @id @default(uuid())
+  title            String
+  description      String                  @db.Text
+  category         InitiativeCategory      @default(CLEANUP)
+  categoryLabel    String                  @default("مبادرة مجتمعية")
+  date             String               
+  time             String               
+  location         String
+  maxParticipants  Int                     @default(20)
+  status           InitiativeStatus        @default(UPCOMING)
+  image            String?
+  tags             String[]                @default([])
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+  organizerId      String
+  organizer        User                    @relation("OrganizedInitiatives", fields: [organizerId], references: [id], onDelete: Cascade)
+  participants     InitiativeParticipant[]
+  @@map("community_initiatives")
+}
+
+model InitiativeParticipant {
+  id             String              @id @default(uuid())
+  joinedAt       DateTime            @default(now())
+  userId         String
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  initiativeId   String
+  initiative     CommunityInitiative @relation(fields: [initiativeId], references: [id], onDelete: Cascade)
+  @@unique([userId, initiativeId])
+  @@map("initiative_participants")
+}
+
+model Rating {
+  id             String    @id @default(uuid())
+  rating         Int       @default(5)
+  comment        String    @db.Text
+  category       String    @default("إعارة أداة")
+  createdAt      DateTime  @default(now())
+  swapItemId     String?
+  swapItem       SwapItem? @relation(fields: [swapItemId], references: [id], onDelete: SetNull)
+  authorId       String
+  author         User      @relation("GivenRatings", fields: [authorId], references: [id], onDelete: Cascade)
+  targetUserId   String
+  targetUser     User      @relation("ReceivedRatings", fields: [targetUserId], references: [id], onDelete: Cascade)
+  @@map("ratings")
+}
+
+model Notification {
+  id         String           @id @default(uuid())
+  title      String
+  message    String           @db.Text
+  read       Boolean          @default(false)
+  type       NotificationType @default(SYSTEM)
+  createdAt  DateTime         @default(now())
+  userId     String
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("notifications")
+}
+
+model ItemAlert {
+  id            String   @id @default(uuid())
+  query         String
+  category      String
+  active        Boolean  @default(true)
+  notes         String?
+  createdAt     DateTime @default(now())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("item_alerts")
+}
+
+model Favorite {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@unique([userId, postId])
+  @@map("favorites")
+}
