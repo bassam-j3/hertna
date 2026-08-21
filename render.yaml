@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: haretna-api
+    env: node
+    buildCommand: "cd backend && npm install && npx prisma generate && npm run build"
+    startCommand: "cd backend && npx prisma migrate deploy && npm run start:prod"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: haretna-db
+          property: connectionString
+
+databases:
+  - name: haretna-db
+    databaseName: haretna
+    user: haretna_user
