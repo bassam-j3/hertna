@@ -9,6 +9,7 @@ import { SearchView } from './views/SearchView';
 import { AddItemModal } from './components/modals/AddItemModal';
 import { insertItem } from './services/itemService';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ToastProvider } from './contexts/ToastContext';
 import { LoginModal, UserProfile } from './components/modals/LoginModal';
 import { ItemDetailModal } from './components/modals/ItemDetailModal';
 import AdminDashboardView from './views/AdminDashboardView';
@@ -115,9 +116,11 @@ function AppContent() {
 export default function App() {
   return (
     <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
+      <ToastProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </ToastProvider>
     </AuthProvider>
   );
 }

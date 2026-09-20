@@ -52,4 +52,28 @@ export class AdminService {
       data: { status: 'resolved' },
     });
   }
+
+  async getAllInitiatives() {
+    return this.prisma.communityInitiative.findMany({
+      include: {
+        organizer: { select: { id: true, name: true, phone: true, avatar: true } },
+        _count: { select: { participants: true } }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+  }
+
+  async approveInitiative(id: string) {
+    return this.prisma.communityInitiative.update({
+      where: { id },
+      data: { status: 'ACTIVE' },
+    });
+  }
+
+  async rejectInitiative(id: string) {
+    return this.prisma.communityInitiative.update({
+      where: { id },
+      data: { status: 'COMPLETED' },
+    });
+  }
 }

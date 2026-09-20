@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import Map, { Marker, NavigationControl, MapRef } from 'react-map-gl/maplibre';
+import { useToast } from '../contexts/ToastContext';
+import Map, { Marker, MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Post } from '../types';
 import { fetchItems, BackendPostResponse } from '../services/itemService';
@@ -12,13 +13,11 @@ interface SearchViewProps {
 }
 
 /**
- * SearchView Component
+ * واجهة الخريطة التفاعلية والبحث الجغرافي (SearchView)
  * 
- * Interactive map interface allowing users to explore local items and campaigns 
- * visually via MapLibre GL. Supports clustering, item detail previews, and 
- * category filtering on a dynamic geographical map.
- * 
- * @param {SearchViewProps} props - Event handlers for selecting items or navigating.
+ * تتيح لأهالي الحي استكشاف الأدوات المعارة والاحتياجات العاجلة جغرافياً.
+ * تتضمن مؤشرات تحميل، معالجة الحالات الفارغة (Empty State)،
+ * وانتقالات سلسة لبطاقة المعاينة مع زر استجابة مباشر.
  */
 const cities = [
   { name: 'دمشق', lat: 33.5138, lng: 36.2765 },
@@ -26,12 +25,15 @@ const cities = [
   { name: 'حماة', lat: 35.1318, lng: 36.7578 }
 ];
 
-export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) => { }, onOpenMap }) => {
+export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem }) => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedItem, setSelectedItem] = useState<Post | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('الكل');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { showError } = useToast();
 
   const categories = [
     'الكل',
@@ -53,6 +55,7 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) =>
   const mapRef = useRef<MapRef>(null);
 
   const loadData = useCallback(async (latitude: number, longitude: number) => {
+    setIsLoading(true);
     try {
       const data = await fetchItems(latitude, longitude, 10, 'all');
       const mappedPosts: Post[] = data.map((item: BackendPostResponse, index: number) => ({
@@ -78,26 +81,26 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) =>
       }));
       setPosts(mappedPosts);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to load items in search', err);
+      showError('تعذر جلب طلبات الجيران في هذا الموقع، يرجى إعادة المحاولة');
+    } finally {
+      setIsLoading(false);
     }
-  }, [selectedCity.name]);
+  }, [selectedCity.name, showError]);
 
   useEffect(() => {
-    let lat = selectedCity.lat;
-    let lon = selectedCity.lng;
+    const lat = selectedCity.lat;
+    const lon = selectedCity.lng;
 
     if (navigator.geolocation && (window.location.hostname === 'localhost' || window.isSecureContext)) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          // If we got real location, and we want to use it... 
-          // For now, we respect the selected city dropdown, so we only fallback if it's the initial load.
-          // Let's just use the selected city center as the user location for demonstration.
-          setUserLocation([lat, lon]);
-          mapRef.current?.flyTo({ center: [lon, lat], zoom: 14 });
-          loadData(lat, lon);
+          setUserLocation([position.coords.latitude, position.coords.longitude]);
+          mapRef.current?.flyTo({ center: [position.coords.longitude, position.coords.latitude], zoom: 14 });
+          loadData(position.coords.latitude, position.coords.longitude);
         },
         (error) => {
-          console.warn("Geolocation failed, using fallback", error);
+          console.warn("Geolocation fallback to city center", error);
           setUserLocation([lat, lon]);
           mapRef.current?.flyTo({ center: [lon, lat], zoom: 14 });
           loadData(lat, lon);
@@ -127,11 +130,10 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) =>
 
       return matchesSearch && matchesCat;
     });
-  }, [posts, searchTerm, activeCategory]);
+  }, [posts, searchTerm, activeCategory, selectedCity.name]);
 
   /**
-   * Renders a custom styled marker pin based on the post category/type.
-   * Memoized to prevent heavy re-renders inside the Map loop.
+   * تمثيل أيقونة الماركر حسب نوع الطلب والتصنيف
    */
   const renderCustomIcon = useCallback((post: Post) => {
     let bgColor = 'bg-[#0d631b]';
@@ -144,8 +146,9 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) =>
       textColor = 'text-white';
       iconName = 'water_drop';
       extraClasses = 'animate-bounce';
-    } else if (post.category === 'طعام') {
-      iconName = 'restaurant';
+    } else if (post.category === 'طعام' || post.category === 'طلب مساعدة') {
+      iconName = 'volunteer_activism';
+      bgColor = 'bg-blue-600';
     }
     return (
       <div className="custom-map-pin map-pin cursor-pointer">
@@ -172,13 +175,7 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) =>
           longitude={post.lng}
           latitude={post.lat}
           anchor="bottom"
-          onClick={(e) => {
-            try {
-              handleMarkerClick(post);
-            } catch (error) {
-              console.error('Error handling marker click:', error);
-            }
-          }}
+          onClick={() => handleMarkerClick(post)}
         >
           {renderCustomIcon(post)}
         </Marker>
@@ -188,7 +185,6 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) =>
 
   return (
     <div className="absolute inset-0 pt-[60px] pb-[80px] w-full h-full bg-[#f7fbf0] text-[#181d17] font-body-lg overflow-hidden rtl z-10">
-
       {/* Map Container */}
       <div className="relative w-full h-full z-0 bg-[#e4edd8]">
         <Map
@@ -233,12 +229,12 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) =>
       </div>
 
       {/* Floating Search & Filter Overlay */}
-      {/* Floating Search & Filter Overlay */}
       <div className="absolute top-4 left-4 right-2 z-40 max-w-screen-md mx-auto pointer-events-none flex flex-col gap-3">
         <div className="flex gap-2 items-center">
           <button
             onClick={() => navigate('/')}
             className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-3 rounded-full text-[#0d631b] dark:text-emerald-400 shadow-[0_4px_24px_0_rgba(0,0,0,0.08)] border border-[#bfcaba] dark:border-slate-700 hover:bg-[#e0e4da] dark:hover:bg-slate-800 transition-colors pointer-events-auto"
+            aria-label="الرجوع للرئيسية"
           >
             <span className="material-symbols-outlined">arrow_forward</span>
           </button>
@@ -253,7 +249,7 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) =>
                 setSelectedLocation(e.target.value);
               }}
             >
-              {cities.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+              {cities.map(c => <option key={c.name} value={c.name} className="dark:bg-slate-900">{c.name}</option>)}
             </select>
           </div>
 
@@ -289,51 +285,87 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) =>
         </div>
       </div>
 
+      {/* Floating Map Loading Pill */}
+      {isLoading && (
+        <div className="absolute top-28 left-1/2 -translate-x-1/2 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-[#bfcaba] dark:border-slate-700 flex items-center gap-2 text-xs font-bold text-[#0d631b] dark:text-emerald-400 pointer-events-none animate-pulse">
+          <span className="w-3.5 h-3.5 border-2 border-[#0d631b] dark:border-emerald-400 border-t-transparent rounded-full animate-spin"></span>
+          <span>جاري تحميل طلبات الجيران في هذا النطاق...</span>
+        </div>
+      )}
+
       {/* Floating Categories & Item Card Bottom Area */}
       <div className="absolute bottom-[96px] left-0 right-0 z-30 pointer-events-none pb-2 flex flex-col gap-4">
-
-        {/* Selected Item Card Preview */}
-        {selectedItem && (
-          <div className="px-4 pointer-events-auto max-w mx-auto w-full">
-            <div
-              onClick={() => onSelectItem && onSelectItem(selectedItem)}
-              className="bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-[0_8px_32px_0_rgba(0,0,0,0.15)] border border-white/40 flex gap-4 items-center cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-            >
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-[#e5eadf] flex-shrink-0 flex items-center justify-center relative overflow-hidden shadow-inner">
-                <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform hover:scale-110 duration-500"
-                  style={{ backgroundImage: `url(${selectedItem.image})` }}
-                />
+        {/* Empty State Overlay */}
+        {!isLoading && filteredPosts.length === 0 && (
+          <div className="px-4 pointer-events-auto max-w-sm mx-auto w-full">
+            <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-gray-200 dark:border-slate-700 text-center space-y-2">
+              <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                <span className="material-symbols-outlined text-xl">travel_explore</span>
               </div>
-              <div className="flex-1 flex flex-col justify-center relative h-full">
-                <button
-                  className="absolute left-0 top-0 text-[#707a6c] hover:text-[#ba1a1a] transition-colors p-1 bg-white/50 rounded-full hover:bg-white"
-                  onClick={(e) => { e.stopPropagation(); setSelectedItem(null); }}
-                >
-                  <span className="material-symbols-outlined text-sm">close</span>
-                </button>
-                <div className="flex justify-between items-start mb-1 pl-8">
-                  <span className="bg-[#cbffc2] text-[#005312] font-medium text-[12px] px-2.5 py-0.5 rounded-full shadow-sm">
-                    {selectedItem.type === 'loan' ? 'مطلوب للإعارة' : selectedItem.type === 'gift' ? 'مطلوب مساعدة' : 'طلب عاجل'}
-                  </span>
-                  <span className="font-medium text-[12px] text-[#707a6c] flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[14px]">near_me</span>
-                    {selectedItem.distanceLabel || '200 م'}
-                  </span>
-                </div>
-                <h3 className="font-bold text-[16px] sm:text-[18px] text-[#181d17] line-clamp-1 pl-8 leading-tight mt-1">{selectedItem.title}</h3>
-                <p className="font-normal text-[13px] sm:text-[14px] text-[#40493d] mt-1 line-clamp-2 pl-6 leading-snug">{selectedItem.description}</p>
-              </div>
+              <h4 className="font-bold text-sm text-[#181d17] dark:text-white">لم يتم العثور على طلبات مطابقة</h4>
+              <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                لا توجد طلبات أو إعارات مسجلة في هذا النطاق أو التصنيف حالياً.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setActiveCategory('الكل');
+                }}
+                className="px-4 py-1.5 bg-[#0d631b] hover:bg-[#155e1f] text-white rounded-xl text-xs font-bold transition-colors"
+              >
+                عرض كافة طلبات المدينة
+              </button>
             </div>
           </div>
         )}
 
+        {/* Selected Item Card Preview */}
+        {selectedItem && (
+          <div className="px-4 pointer-events-auto max-w-md mx-auto w-full transition-all duration-300 transform translate-y-0">
+            <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl p-4 shadow-[0_8px_32px_0_rgba(0,0,0,0.18)] border border-white/60 dark:border-slate-700 flex flex-col gap-3">
+              <div className="flex gap-4 items-center">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-[#e5eadf] dark:bg-slate-800 flex-shrink-0 flex items-center justify-center relative overflow-hidden shadow-inner">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-transform hover:scale-110 duration-500"
+                    style={{ backgroundImage: `url(${selectedItem.image})` }}
+                  />
+                </div>
+                <div className="flex-1 flex flex-col justify-center relative min-w-0">
+                  <button
+                    className="absolute left-0 top-0 text-[#707a6c] hover:text-[#ba1a1a] transition-colors p-1 bg-white/60 dark:bg-slate-800 rounded-full"
+                    onClick={() => setSelectedItem(null)}
+                  >
+                    <span className="material-symbols-outlined text-sm">close</span>
+                  </button>
+                  <div className="flex justify-between items-start mb-1 pl-8">
+                    <span className="bg-[#cbffc2] dark:bg-emerald-950/60 text-[#005312] dark:text-emerald-300 font-bold text-[11px] px-2.5 py-0.5 rounded-full shadow-2xs">
+                      {selectedItem.type === 'loan' ? 'مطلوب للإعارة' : selectedItem.type === 'gift' ? 'مطلوب مساعدة' : 'طلب عاجل'}
+                    </span>
+                    <span className="font-semibold text-[11px] text-[#707a6c] dark:text-gray-400 flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[13px]">near_me</span>
+                      {selectedItem.distanceLabel || 'قريب منك'}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-base text-[#181d17] dark:text-white line-clamp-1 pl-8 mt-0.5 leading-snug">
+                    {selectedItem.title}
+                  </h3>
+                  <p className="font-medium text-xs text-[#40493d] dark:text-gray-300 mt-1 line-clamp-2 leading-relaxed">
+                    {selectedItem.description}
+                  </p>
+                </div>
+              </div>
 
+              <button
+                onClick={() => onSelectItem && onSelectItem(selectedItem)}
+                className="w-full py-2.5 bg-[#0d631b] hover:bg-[#155e1f] text-white rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-2 transition-all active:scale-98"
+              >
+                <span className="material-symbols-outlined text-base">visibility</span>
+                <span>عرض تفاصيل الطلب والمساعدة 🤝</span>
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-
     </div>
   );
 };
-
-
-
