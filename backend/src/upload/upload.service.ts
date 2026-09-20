@@ -26,8 +26,10 @@ export class UploadService {
         mimetype: file.mimetype,
         size: file.size,
       };
-    } catch (error: any) {
-      this.logger.error(`Could not upload file to bucket ${bucket}: ${error.message}`, error.stack);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      const stack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(`Could not upload file to bucket ${bucket}: ${message}`, stack);
       throw new InternalServerErrorException('Could not upload file');
     }
   }

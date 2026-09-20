@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Post, CommunityInitiative } from '../types';
-import { CommunityInitiativesSection } from './CommunityInitiativesSection';
-import { fetchItems } from '../services/itemService';
-import { CreateInitiativeModal } from './CreateInitiativeModal';
+import { CommunityInitiativesSection } from '../components/CommunityInitiativesSection';
+import { fetchItems, BackendPostResponse } from '../services/itemService';
+import { CreateInitiativeModal } from '../components/modals/CreateInitiativeModal';
 import { useAuth } from '../contexts/AuthContext';
 
 interface HomeFeedProps {
@@ -59,24 +59,24 @@ export const HomeFeed: React.FC<HomeFeedProps> = ({
 
       const data = await fetchItems(userLat, userLon, selectedRadius, selectedCategory);
       
-      const mappedPosts = data.map((item: any) => ({
-        id: item.id as string,
+      const mappedPosts: Post[] = data.map((item: BackendPostResponse) => ({
+        id: item.id,
         type: item.category === 'احتياجات عاجلة' ? 'urgent' : (item.category === 'طلب مساعدة' ? 'gift' : 'loan'),
-        title: item.title as string,
-        description: (item.description as string) || '',
-        category: (item.category as string) || 'أخرى',
-        maxDays: null,
-        image: (item.image as string) || 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=300&q=80',
-        ownerName: item.isAnonymous ? 'مستخدم مستور' : ((item.user as Record<string, string>)?.name || 'مستخدم'),
-        ownerId: item.userId as string,
-        ownerAvatar: (item.user as Record<string, string>)?.avatar || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80',
-        ownerRating: (item.user as Record<string, number>)?.trustPoints || 5.0,
-        distanceKm: (item.distanceKm as number) || 0.5,
+        title: item.title,
+        description: item.description || '',
+        category: item.category || 'أخرى',
+        maxDays: undefined,
+        image: item.image || 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=300&q=80',
+        ownerName: item.isAnonymous ? 'مستخدم مستور' : (item.user?.name || 'مستخدم'),
+        ownerId: item.userId || item.user?.id || '',
+        ownerAvatar: item.user?.avatar || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80',
+        ownerRating: item.user?.trustPoints || 5.0,
+        distanceKm: item.distanceKm || 0.5,
         distanceLabel: 'قريب منك',
-        locationName: (item.location as string) || 'دمشق',
+        locationName: item.location || 'دمشق',
         status: 'available',
-        dateAdded: new Date(item.createdAt as string).toLocaleDateString(),
-        isAnonymous: (item.isAnonymous as boolean) || false
+        dateAdded: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '',
+        isAnonymous: item.isAnonymous || false
       }));
       setPosts(mappedPosts);
     } catch (err) {
@@ -129,7 +129,18 @@ export const HomeFeed: React.FC<HomeFeedProps> = ({
     return () => window.removeEventListener('ITEM_ADDED', handleItemAdded);
   }, [loadItems]);
 
-  const handleCreateInitiative = async (newInit: any) => {
+  const handleCreateInitiative = async (newInit: {
+    title: string;
+    description: string;
+    category: string;
+    categoryLabel?: string;
+    date: string;
+    time?: string;
+    location?: string;
+    maxParticipants?: number;
+    image?: string;
+    tags?: string[];
+  }) => {
     try {
       const { InitiativesService } = await import('../services/apiClient');
       await InitiativesService.create({

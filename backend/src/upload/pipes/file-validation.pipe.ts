@@ -11,15 +11,16 @@ const KNOWN_SIGNATURES: Record<string, (b: Buffer) => boolean> = {
 };
 
 @Injectable()
-export class FileValidationPipe implements PipeTransform<any, StrictUploadedFile> {
+export class FileValidationPipe implements PipeTransform<unknown, StrictUploadedFile> {
   constructor(private readonly options: FileValidationOptions) {}
 
-  transform(value: any): StrictUploadedFile {
-    if (!value) {
+  transform(value: unknown): StrictUploadedFile {
+    if (!value || typeof value !== 'object') {
       throw new BadRequestException('File is required');
     }
 
-    if (!value.buffer || !value.originalname || !value.mimetype || value.size === undefined) {
+    const raw = value as Partial<StrictUploadedFile>;
+    if (!raw.buffer || !raw.originalname || !raw.mimetype || raw.size === undefined) {
       throw new BadRequestException('Invalid file upload format');
     }
 

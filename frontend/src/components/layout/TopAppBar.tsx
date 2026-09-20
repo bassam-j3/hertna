@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { NotificationModal } from '../NotificationModal';
+import { NotificationModal } from '../modals/NotificationModal';
 import { useAuth } from '../../contexts/AuthContext';
+import { NotificationItem } from '../../types';
 
 export const TopAppBar: React.FC = () => {
   const { currentUser, selectedLocation, setSelectedLocation } = useAuth();
   const [isLocationMenuOpen, setIsLocationMenuOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isDark, setIsDark] = useState(false);
 
@@ -40,7 +41,7 @@ export const TopAppBar: React.FC = () => {
       const { NotificationsService } = await import('../../services/apiClient');
       const data = await NotificationsService.getAll();
       setNotifications(data);
-      setUnreadCount(data.filter((n: any) => !n.read).length);
+      setUnreadCount(data.filter((n: NotificationItem) => !n.read).length);
     } catch (e) {
       console.error(e);
     }
@@ -149,7 +150,7 @@ export const TopAppBar: React.FC = () => {
         onToggleRead={handleToggleRead}
         onDeleteNotification={handleDeleteNotification}
         onClearAll={handleClearAll}
-        onAddSimulatedNotification={handleAddSimulatedNotification as any}
+        onAddSimulatedNotification={handleAddSimulatedNotification}
       />
     </>
   );

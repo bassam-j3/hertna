@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { TopAppBar } from './components/layout/TopAppBar';
 import { BottomNav } from './components/layout/BottomNav';
-import { HomeFeed } from './components/HomeFeed';
-import { MySwapsView } from './components/MySwapsView';
-import { ProfileView } from './components/ProfileView';
-import { SearchView } from './components/SearchView';
+import { HomeFeed } from './views/HomeFeed';
+import { MySwapsView } from './views/MySwapsView';
+import { ProfileView } from './views/ProfileView';
+import { SearchView } from './views/SearchView';
 import { AddItemModal } from './components/modals/AddItemModal';
 import { insertItem } from './services/itemService';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { LoginModal, UserProfile } from './components/LoginModal';
-import { ItemDetailModal } from './components/ItemDetailModal';
-import AdminDashboardView from './components/AdminDashboardView';
+import { LoginModal, UserProfile } from './components/modals/LoginModal';
+import { ItemDetailModal } from './components/modals/ItemDetailModal';
+import AdminDashboardView from './views/AdminDashboardView';
 import { createExchangeRequest } from './services/exchangeService';
 import { Post } from './types';
 
@@ -25,7 +25,18 @@ function AppContent() {
 
   // دالة لإرسال الطلب الجديد للباك إند
   const handleAddItem = async (data: Partial<Post>) => {
-    await insertItem(data);
+    if (!data.title || !data.category) return;
+    await insertItem({
+      title: data.title,
+      category: data.category,
+      type: data.type === 'gift' ? 'OFFER' : 'REQUEST',
+      description: data.description,
+      urgent: data.type === 'urgent',
+      distanceKm: data.distanceKm,
+      location: data.locationName,
+      image: data.image,
+      isAnonymous: data.isAnonymous,
+    });
     setIsAddModalOpen(false);
   };
 

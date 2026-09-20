@@ -9,14 +9,25 @@ const AVATAR_PRESETS = [
   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80'
 ];
 
+export interface ProfileFormData {
+  name: string;
+  phone: string;
+  avatar: string;
+  job?: string;
+  bio?: string;
+  city: string;
+  neighborhood: string;
+  email?: string;
+}
+
 interface EditProfileModalProps {
   isEditProfileOpen: boolean;
   setIsEditProfileOpen: (open: boolean) => void;
-  editForm: any;
-  setEditForm: React.Dispatch<React.SetStateAction<any>>;
+  editForm: ProfileFormData;
+  setEditForm: React.Dispatch<React.SetStateAction<ProfileFormData>> | ((form: ProfileFormData | ((prev: ProfileFormData) => ProfileFormData)) => void);
   handleSaveProfile: (e: React.FormEvent) => void;
   startCamera: (facingMode: "user" | "environment") => void;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export default function EditProfileModal({

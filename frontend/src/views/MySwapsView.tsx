@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { SwapItem, Rating } from '../types';
-import { RateNeighborModal } from './RateNeighborModal';
-import { AutoThankYouModal } from './AutoThankYouModal';
-import { ReturnReminderModal } from './ReturnReminderModal';
-import { fetchMyLoans, updateExchangeStatus } from '../services/exchangeService';
+import { RateNeighborModal } from '../components/modals/RateNeighborModal';
+import { AutoThankYouModal } from '../components/modals/AutoThankYouModal';
+import { ReturnReminderModal } from '../components/modals/ReturnReminderModal';
+import { fetchMyLoans, updateExchangeStatus, SwapRecord } from '../services/exchangeService';
 import { useAuth } from '../contexts/AuthContext';
 
 interface MySwapsViewProps {
@@ -26,7 +26,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
   const [confirmedItems, setConfirmedItems] = useState<string[]>([]);
   const [ratingFilter, setRatingFilter] = useState<'all' | '5star' | '4star' | 'comments'>('all');
 
-  const handleAddRating = async (ratingData: any) => {
+  const handleAddRating = async (ratingData: { rating: number; comment?: string; category?: string }) => {
     try {
       const { RatingsService } = await import('../services/apiClient');
       await RatingsService.create({
@@ -50,10 +50,11 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
   const loadSwaps = async () => {
     try {
       const data = await fetchMyLoans();
-      const mappedLends = data.asLender.map((s: any) => ({
+      const mappedLends: SwapItem[] = data.asLender.map((s: SwapRecord) => ({
         id: s.id,
         title: s.title,
         borrowerName: s.borrower?.name || 'مستخدم',
+        borrowerLocation: s.borrower?.neighborhood || s.borrower?.city || 'دمشق - حي الروضة',
         borrowerId: s.borrowerId,
         lenderId: s.lenderId,
         image: s.post?.image || 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=300&q=80',
@@ -67,10 +68,11 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
       }));
       setSwapItems(mappedLends);
 
-      const mappedRequests = data.asBorrower.map((s: any) => ({
+      const mappedRequests: SwapItem[] = data.asBorrower.map((s: SwapRecord) => ({
         id: s.id,
         title: s.title,
         borrowerName: s.lender?.name || 'مستخدم',
+        borrowerLocation: s.lender?.neighborhood || s.lender?.city || 'دمشق - حي الروضة',
         borrowerId: s.borrowerId,
         lenderId: s.lenderId,
         image: s.post?.image || 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=300&q=80',

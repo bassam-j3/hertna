@@ -12,8 +12,9 @@ export class FallbackStorageService implements StorageService {
   async upload(fileBuffer: Buffer, bucket: string, destinationKey: string, mimetype: string): Promise<string> {
     try {
       return await this.primary.upload(fileBuffer, bucket, destinationKey, mimetype);
-    } catch (error: any) {
-      this.logger.warn(`Primary storage failed, falling back to secondary: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.warn(`Primary storage failed, falling back to secondary: ${message}`);
       return await this.fallback.upload(fileBuffer, bucket, destinationKey, mimetype);
     }
   }

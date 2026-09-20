@@ -35,8 +35,9 @@ export class LocalStorageService implements StorageService, OnModuleInit {
       // Return a URL path that includes the bucket and destinationKey
       // Ensure we format it correctly for URLs
       return `/uploads/${bucket}/${destinationKey.replace(/\\/g, '/')}`;
-    } catch (error: any) {
-      this.logger.error(`Failed to save file locally: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Failed to save file locally: ${message}`);
       throw new Error('Failed to save file locally');
     }
   }

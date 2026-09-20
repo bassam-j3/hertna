@@ -2,6 +2,17 @@ import { Controller, Get, Patch, Param, UseGuards, Request, ForbiddenException }
 import { AdminService } from './admin.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+export interface AuthenticatedUser {
+  id: string;
+  userId: string;
+  email: string;
+  userType: string;
+}
+
+export interface AuthenticatedRequest {
+  user: AuthenticatedUser;
+}
+
 /**
  * متحكم الإدارة (Admin Controller)
  * 
@@ -13,7 +24,7 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   // التحقق من الصلاحيات (Role-Based Access Control): يتم رفض أي طلب لا يحمل رتبة "لجنة" أو "مشرف"
-  private checkCommittee(req: any) {
+  private checkCommittee(req: AuthenticatedRequest) {
     if (req.user.userType !== 'committee' && req.user.userType !== 'admin') {
       throw new ForbiddenException('Access denied. Committee members only.');
     }

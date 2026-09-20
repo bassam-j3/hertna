@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminData } from '../hooks/useAdminData';
 import { useAuth } from '../contexts/AuthContext';
-import UserManagementTable from './admin/UserManagementTable';
-import TicketsInbox from './admin/TicketsInbox';
+import UserManagementTable from '../components/admin/UserManagementTable';
+import TicketsInbox from '../components/admin/TicketsInbox';
 
 /**
  * لوحة تحكم اللجنة (السرية)

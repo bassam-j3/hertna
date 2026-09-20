@@ -15,8 +15,8 @@ import {
   CartesianGrid,
 } from 'recharts';
 import { SAMPLE_LOCATIONS } from '../data/constants';
-import EditProfileModal from './profile/EditProfileModal';
-import SupportTicketModal from './profile/SupportTicketModal';
+import EditProfileModal from '../components/profile/EditProfileModal';
+import SupportTicketModal from '../components/profile/SupportTicketModal';
 import apiClient from '../services/apiClient';
 
 import { Rating } from '../types';

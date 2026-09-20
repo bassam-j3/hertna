@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Post, PostType } from '../types';
+import { Post, PostType } from '../../types';
 
 interface AddPostModalProps {
   isOpen: boolean;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { CITIES_DATA } from '../data/constants';
-import { AuthService } from '../services/authService';
+import { CITIES_DATA } from '../../data/constants';
+import { AuthService } from '../../services/authService';
 
 export interface UserProfile {
   name: string;
@@ -10,6 +10,16 @@ export interface UserProfile {
   userType: 'resident' | 'returning' | 'donor' | 'committee';
   avatar: string;
   isLoggedIn: boolean;
+}
+
+interface ApiErrorResponse {
+  response?: {
+    status?: number;
+    data?: {
+      message?: string | string[];
+    } | string;
+  };
+  message?: string;
 }
 
 interface LoginModalProps {
@@ -94,22 +104,23 @@ export const LoginModal: React.FC<LoginModalProps> = ({
     try {
       const res = await AuthService.login({ phone, password });
       onLoginSuccess({ ...res.user, isLoggedIn: true });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as ApiErrorResponse;
       let finalMsg = 'بيانات الدخول غير صحيحة';
-      const data = err.response?.data;
+      const data = error.response?.data;
 
       if (data) {
-        if (typeof data.message === 'string') {
+        if (typeof data === 'object' && typeof data.message === 'string') {
           finalMsg = data.message;
-        } else if (Array.isArray(data.message)) {
+        } else if (typeof data === 'object' && Array.isArray(data.message)) {
           finalMsg = data.message[0];
         } else if (typeof data === 'string') {
           finalMsg = data;
-        } else if (data.message && typeof data.message === 'object') {
+        } else if (typeof data === 'object' && data.message && typeof data.message === 'object') {
           finalMsg = 'بيانات غير صالحة'; // Fallback if message itself is a nested object
         }
-      } else if (err.message) {
-        finalMsg = err.message;
+      } else if (error.message) {
+        finalMsg = error.message;
       }
 
       setErrorMsg(finalMsg);
@@ -136,24 +147,25 @@ export const LoginModal: React.FC<LoginModalProps> = ({
         userType,
       });
       onLoginSuccess({ ...res.user, isLoggedIn: true });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as ApiErrorResponse;
       let finalMsg = 'حدث خطأ أثناء التسجيل';
-      const data = err.response?.data;
+      const data = error.response?.data;
 
-      if (err.response?.status === 409) {
+      if (error.response?.status === 409) {
         finalMsg = 'رقم الهاتف مسجل مسبقاً، يرجى تسجيل الدخول أو استخدام رقم آخر.';
       } else if (data) {
-        if (typeof data.message === 'string') {
+        if (typeof data === 'object' && typeof data.message === 'string') {
           finalMsg = data.message;
-        } else if (Array.isArray(data.message)) {
+        } else if (typeof data === 'object' && Array.isArray(data.message)) {
           finalMsg = data.message[0];
         } else if (typeof data === 'string') {
           finalMsg = data;
-        } else if (data.message && typeof data.message === 'object') {
+        } else if (typeof data === 'object' && data.message && typeof data.message === 'object') {
           finalMsg = 'بيانات غير صالحة'; // Fallback if message itself is a nested object
         }
-      } else if (err.message) {
-        finalMsg = err.message;
+      } else if (error.message) {
+        finalMsg = error.message;
       }
 
       setErrorMsg(finalMsg);
@@ -281,7 +293,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                         const res = await AuthService.login({ phone: acc.phone, password: 'password123' });
                         onLoginSuccess({ ...res.user, isLoggedIn: true });
                         onClose();
-                      } catch (err: any) {
+                      } catch {
                         try {
                           const res = await AuthService.register({
                             name: acc.name,
@@ -293,7 +305,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                           });
                           onLoginSuccess({ ...res.user, isLoggedIn: true });
                           onClose();
-                        } catch (registerErr: any) {
+                        } catch {
                           setErrorMsg('حدث خطأ أثناء الدخول السريع');
                         }
                       } finally {

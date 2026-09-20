@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CommunityInitiative } from '../types';
+import { CommunityInitiative } from '../../types';
 
 interface InitiativeDetailModalProps {
   isOpen: boolean;

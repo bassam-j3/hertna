@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Rating } from '../types';
+import { Rating } from '../../types';
 
 interface RateNeighborModalProps {
   isOpen: boolean;

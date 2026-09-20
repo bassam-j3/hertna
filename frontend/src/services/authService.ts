@@ -11,6 +11,28 @@ export interface UserProfile {
   isLoggedIn?: boolean;
 }
 
+export interface LoginDto {
+  phone: string;
+  password: string;
+}
+
+export interface RegisterDto {
+  name: string;
+  phone: string;
+  password: string;
+  city?: string;
+  neighborhood?: string;
+  userType?: string;
+  lat?: number;
+  lng?: number;
+  avatar?: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: UserProfile;
+}
+
 export const setToken = (token: string) => {
   localStorage.setItem('haretna_token', token);
 };
@@ -24,24 +46,24 @@ export const removeToken = () => {
 };
 
 export const AuthService = {
-  register: async (data: any) => {
-    const res = await apiClient.post('/auth/register', data);
+  register: async (data: RegisterDto): Promise<AuthResponse> => {
+    const res = await apiClient.post<AuthResponse>('/auth/register', data);
     if (res.data.token) {
       setToken(res.data.token);
     }
     return res.data;
   },
 
-  login: async (data: any) => {
-    const res = await apiClient.post('/auth/login', data);
+  login: async (data: LoginDto): Promise<AuthResponse> => {
+    const res = await apiClient.post<AuthResponse>('/auth/login', data);
     if (res.data.token) {
       setToken(res.data.token);
     }
     return res.data;
   },
 
-  getProfile: async () => {
-    const res = await apiClient.get('/auth/me');
+  getProfile: async (): Promise<UserProfile> => {
+    const res = await apiClient.get<UserProfile>('/auth/me');
     return res.data;
   },
 

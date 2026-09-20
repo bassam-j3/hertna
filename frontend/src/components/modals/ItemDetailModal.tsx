@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Post, Rating } from '../types';
+import { Post, Rating } from '../../types';
 import { PrivacyPledgeModal } from './PrivacyPledgeModal';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface ItemDetailModalProps {
   post: Post | null;

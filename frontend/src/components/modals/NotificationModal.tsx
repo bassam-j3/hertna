@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NotificationItem } from '../types';
+import { NotificationItem } from '../../types';
 
 interface NotificationModalProps {
   isOpen: boolean;

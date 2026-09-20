@@ -73,8 +73,8 @@ describe('Upload Module Tests', () => {
         expect.assertions(1);
         try { 
           await service.uploadFile(mockFile, bucket, userId); 
-        } catch (e: any) { 
-          expect(e.message).toBe('Could not upload file'); 
+        } catch (e: unknown) { 
+          expect((e as Error).message).toBe('Could not upload file'); 
         }
       });
     });

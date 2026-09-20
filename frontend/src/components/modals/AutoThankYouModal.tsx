@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SwapItem } from '../types';
+import { SwapItem } from '../../types';
 
 interface AutoThankYouModalProps {
   isOpen: boolean;

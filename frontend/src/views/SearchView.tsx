@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import Map, { Marker, NavigationControl, MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Post } from '../types';
-import { fetchItems } from '../services/itemService';
+import { fetchItems, BackendPostResponse } from '../services/itemService';
 
 interface SearchViewProps {
   onSelectItem?: (post: Post) => void;
@@ -55,13 +55,13 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) =>
   const loadData = useCallback(async (latitude: number, longitude: number) => {
     try {
       const data = await fetchItems(latitude, longitude, 10, 'all');
-      const mappedPosts = data.map((item: any, index: number) => ({
+      const mappedPosts: Post[] = data.map((item: BackendPostResponse, index: number) => ({
         id: item.id,
         type: item.category === 'احتياجات عاجلة' ? 'urgent' : (item.category === 'طلب مساعدة' ? 'gift' : 'loan'),
         title: item.title,
         description: item.description || '',
         category: item.category || 'أخرى',
-        maxDays: null,
+        maxDays: undefined,
         image: item.image || 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=300&q=80',
         ownerName: item.isAnonymous ? 'مستخدم مستور' : (item.user?.name || 'مستخدم'),
         ownerId: item.userId || 'mock-id',
@@ -71,7 +71,7 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem = (post) =>
         distanceLabel: 'قريب منك',
         locationName: item.location || selectedCity.name,
         status: 'available',
-        dateAdded: new Date(item.createdAt).toLocaleDateString(),
+        dateAdded: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '',
         isAnonymous: item.isAnonymous || false,
         lat: (item.lat || latitude + (Math.random() - 0.5) * 0.02) + (index * 0.00005),
         lng: (item.lng || longitude + (Math.random() - 0.5) * 0.02) + (index * 0.00005),
