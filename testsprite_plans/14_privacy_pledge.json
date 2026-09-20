@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TestSprite/testsprite-cli/v0.11.0/schemas/plan.schema.json",
+  "projectId": "e9abdc30-583f-4481-b500-7d5a9f294363",
+  "type": "frontend",
+  "name": "Privacy Pledge Modal",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to http://localhost:5173/ and look for any privacy pledge or terms section"
+    },
+    {
+      "type": "action",
+      "description": "Find and click a button or link that opens the Privacy Pledge modal"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify a Privacy Pledge modal is displayed with privacy terms and conditions"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the modal has a close button or accept/dismiss functionality"
+    }
+  ]
+}

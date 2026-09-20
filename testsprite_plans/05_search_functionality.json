@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TestSprite/testsprite-cli/v0.11.0/schemas/plan.schema.json",
+  "projectId": "e9abdc30-583f-4481-b500-7d5a9f294363",
+  "type": "frontend",
+  "name": "Search Functionality",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to http://localhost:5173/ and find the search icon or search view in the navigation"
+    },
+    {
+      "type": "action",
+      "description": "Click on the search/magnifying glass icon to open the search view"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify a search input field is displayed for the user to type search queries"
+    },
+    {
+      "type": "action",
+      "description": "Type a search query in Arabic (e.g., 'أدوات') in the search input"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify search results appear or the content filters based on the search query"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TestSprite/testsprite-cli/v0.11.0/schemas/plan.schema.json",
+  "projectId": "e9abdc30-583f-4481-b500-7d5a9f294363",
+  "type": "frontend",
+  "name": "Bottom Navigation Bar Works",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to http://localhost:5173/ and wait for the page to fully load"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify a bottom navigation bar is visible at the bottom of the viewport with multiple icons/tabs"
+    },
+    {
+      "type": "action",
+      "description": "Click each navigation item in the bottom bar one by one"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify that clicking each tab changes the main view content (e.g., Home Feed, Map, Search, Profile)"
+    }
+  ]
+}

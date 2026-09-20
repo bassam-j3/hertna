@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TestSprite/testsprite-cli/v0.11.0/schemas/plan.schema.json",
+  "projectId": "e9abdc30-583f-4481-b500-7d5a9f294363",
+  "type": "frontend",
+  "name": "Urgent Posts Highlighting",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to http://localhost:5173/ and look for posts marked as urgent in the home feed"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify urgent posts have distinctive visual markers (like orange indicators or pulsing animations) that differentiate them from regular posts"
+    },
+    {
+      "type": "action",
+      "description": "If there is an urgent/priority filter, click it to view only urgent posts"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify filtered results show only urgent flagged posts"
+    }
+  ]
+}

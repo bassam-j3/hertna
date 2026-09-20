@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, MinLength, IsIn } from 'class-validator';
 
 export class RegisterDto {
   @IsString()
@@ -24,5 +24,6 @@ export class RegisterDto {
 
   @IsString()
   @IsOptional()
+  @IsIn(['resident', 'returning', 'donor', 'committee', 'user'])
   userType?: string;
 }

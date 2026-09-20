@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TestSprite/testsprite-cli/v0.11.0/schemas/plan.schema.json",
+  "projectId": "e9abdc30-583f-4481-b500-7d5a9f294363",
+  "type": "frontend",
+  "name": "Home Feed Displays Community Requests",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to http://localhost:5173/ - the main page should show the Home Feed with community requests"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the Home Feed section is visible and displays post cards with titles and descriptions in Arabic"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify each post card shows the item name, category tag, and user info"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the page has a bottom navigation bar visible on the screen"
+    }
+  ]
+}

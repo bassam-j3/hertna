@@ -204,6 +204,67 @@ async function main() {
   });
 
   console.log('Upserted SwapItems (pending, active, completed).');
+
+  // Admin Panel Fake Data
+  const blockedUser = await prisma.user.upsert({
+    where: { email: 'baduser@haretna.com' },
+    update: { status: 'blocked', warnings: 3 },
+    create: {
+      id: 'seed-user-blocked',
+      email: 'baduser@haretna.com',
+      passwordHash: hashedPassword,
+      name: 'مستخدم محظور (تجريبي)',
+      phone: '0933999999',
+      city: 'دمشق',
+      neighborhood: 'الميدان',
+      status: 'blocked',
+      warnings: 3
+    }
+  });
+
+  await prisma.supportTicket.upsert({
+    where: { id: 'seed-ticket-1' },
+    update: { status: 'open' },
+    create: {
+      id: 'seed-ticket-1',
+      type: 'إبلاغ عن مستخدم',
+      message: 'هذا المستخدم تأخر جداً في إرجاع السلم ولم يعد يجيب على الرسائل.',
+      status: 'open',
+      userId: user.id
+    }
+  });
+
+  await prisma.supportTicket.upsert({
+    where: { id: 'seed-ticket-2' },
+    update: { status: 'resolved' },
+    create: {
+      id: 'seed-ticket-2',
+      type: 'مشكلة تقنية',
+      message: 'الخريطة لا تظهر موقعي الحالي بشكل دقيق في حي الروضة.',
+      status: 'resolved',
+      userId: test2User.id
+    }
+  });
+
+  await prisma.communityInitiative.upsert({
+    where: { id: 'seed-init-1' },
+    update: { status: 'ACTIVE' },
+    create: {
+      id: 'seed-init-1',
+      title: 'حملة تنظيف الحديقة العامة',
+      description: 'ندعوكم للمشاركة في تنظيف حديقة الحي يوم الجمعة القادم.',
+      category: 'CLEANUP',
+      categoryLabel: 'مبادرة تنظيف',
+      date: '2026-08-30',
+      time: '08:00 AM',
+      location: 'دمشق, الحديقة العامة',
+      maxParticipants: 50,
+      status: 'ACTIVE',
+      organizerId: user.id
+    }
+  });
+
+  console.log('Upserted Admin Panel Fake Data (Tickets, Blocked User, Initiative).');
 }
 
 main()

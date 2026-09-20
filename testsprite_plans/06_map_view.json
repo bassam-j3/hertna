@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TestSprite/testsprite-cli/v0.11.0/schemas/plan.schema.json",
+  "projectId": "e9abdc30-583f-4481-b500-7d5a9f294363",
+  "type": "frontend",
+  "name": "Interactive Map View",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to http://localhost:5173/ and look for a map icon or map tab in the bottom navigation"
+    },
+    {
+      "type": "action",
+      "description": "Click the map icon/tab to navigate to the map view"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify that an interactive map (Leaflet/OpenStreetMap) is rendered on the page"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify that map markers/pins are visible on the map representing community requests"
+    }
+  ]
+}

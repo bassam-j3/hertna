@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TestSprite/testsprite-cli/v0.11.0/schemas/plan.schema.json",
+  "projectId": "e9abdc30-583f-4481-b500-7d5a9f294363",
+  "type": "frontend",
+  "name": "Post Detail Modal Opens",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to http://localhost:5173/ and wait for the home feed to load with post cards"
+    },
+    {
+      "type": "action",
+      "description": "Click on the first available post card in the home feed to open its detail"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify a detail modal/view opens showing the full item description, category, and location"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the detail view contains a fulfillment action button like 'أنا أمتلك هذا' (I have this)"
+    }
+  ]
+}

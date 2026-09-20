@@ -12,6 +12,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
 import { TicketsModule } from './tickets/tickets.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { TicketsModule } from './tickets/tickets.module';
     UsersModule,
     AdminModule,
     TicketsModule,
+    UploadModule,
   ],
   controllers: [],
   providers: [],

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TestSprite/testsprite-cli/v0.11.0/schemas/plan.schema.json",
+  "projectId": "e9abdc30-583f-4481-b500-7d5a9f294363",
+  "type": "frontend",
+  "name": "Login Page Loads Correctly",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to http://localhost:5173/ - the main page of the Haretna application"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify that the page loads with Arabic RTL layout (dir=rtl) and displays the Haretna logo/branding"
+    },
+    {
+      "type": "action",
+      "description": "Look for and click any login or sign-in button on the page"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify that a login modal appears with phone number and password input fields"
+    }
+  ]
+}

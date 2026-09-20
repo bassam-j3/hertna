@@ -888,6 +888,23 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           <span className="material-symbols-outlined text-[#707a6c] dark:text-gray-400">chevron_left</span>
         </button>
 
+        {/* Admin Panel Button */}
+        {(currentUser?.userType === 'committee' || currentUser?.userType === 'admin') && (
+          <button
+            onClick={() => navigate('/admin')}
+            className="w-full px-4 py-3.5 text-right flex items-center justify-between hover:bg-[#f1f5eb] dark:hover:bg-[#1a1a1a] transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-[#fc820c]">admin_panel_settings</span>
+              <div>
+                <span className="font-bold text-sm text-[#181d17] dark:text-white">لوحة تحكم اللجنة (السرية)</span>
+                <span className="block text-[11px] text-[#707a6c] dark:text-gray-400">إدارة الجيران والتذاكر المرفوعة</span>
+              </div>
+            </div>
+            <span className="material-symbols-outlined text-[#707a6c] dark:text-gray-400">chevron_left</span>
+          </button>
+        )}
+
         {/* Logout Button */}
         <button
           onClick={() => setIsLogoutModalOpen(true)}

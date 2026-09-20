@@ -441,6 +441,19 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 />
               </div>
 
+              <div className="space-y-1">
+                <label className="block text-xs font-bold text-white">
+                  كلمة المرور:
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full h-11 px-3 bg-[#19261c] border border-[#0d631b]/30 rounded-xl text-xs font-medium outline-none focus:border-[#0d631b] text-white placeholder-gray-500"
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
                   <label className="block text-xs font-bold text-white">

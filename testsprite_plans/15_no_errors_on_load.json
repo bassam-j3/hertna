@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TestSprite/testsprite-cli/v0.11.0/schemas/plan.schema.json",
+  "projectId": "e9abdc30-583f-4481-b500-7d5a9f294363",
+  "type": "frontend",
+  "name": "No Console Errors on Load",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to http://localhost:5173/ and wait for the application to fully load"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the page loads without critical JavaScript errors visible in any error overlay"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify all major page sections render (header, main content, bottom navigation) without broken elements"
+    }
+  ]
+}

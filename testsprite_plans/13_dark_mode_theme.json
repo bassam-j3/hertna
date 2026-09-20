@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TestSprite/testsprite-cli/v0.11.0/schemas/plan.schema.json",
+  "projectId": "e9abdc30-583f-4481-b500-7d5a9f294363",
+  "type": "frontend",
+  "name": "Dark Mode and Visual Theme",
+  "planSteps": [
+    {
+      "type": "action",
+      "description": "Navigate to http://localhost:5173/ and check the overall visual theme of the application"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify the application renders with a consistent visual theme (dark mode or light mode) with glassmorphism effects"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify all buttons, cards, and UI elements follow the design system consistently"
+    },
+    {
+      "type": "assertion",
+      "description": "Verify animations and transitions are smooth when interacting with the UI"
+    }
+  ]
+}

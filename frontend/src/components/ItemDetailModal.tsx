@@ -155,7 +155,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
             </div>
 
             {/* Owner Profile Header */}
-            <div className="bg-[#f1f5eb] p-4 rounded-2xl flex items-center justify-between border border-[#bfcaba]/60">
+            <div className="bg-[#f1f5eb] p-4 rounded-2xl flex items-center justify-between border border-[#bfcaba]/60 flex-wrap gap-3">
               <div className="flex items-center gap-3">
                 {post.isAnonymous ? (
                   <div className="w-12 h-12 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xl border-2 border-emerald-500 shrink-0 shadow-sm">
