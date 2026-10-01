@@ -65,7 +65,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       decoration: BoxDecoration(
                         color: AppColors.primarySurface,
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primaryLight.withOpacity(0.3)),
+                        border: Border.all(color: AppColors.primaryLight.withValues(alpha: 0.3)),
                       ),
                       child: const Icon(
                         Icons.holiday_village_rounded,
@@ -102,9 +102,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
-                        color: AppColors.error.withOpacity(0.08),
+                        color: AppColors.error.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                        border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         children: [

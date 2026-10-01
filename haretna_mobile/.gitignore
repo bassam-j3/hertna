@@ -1,0 +1,14 @@
+# Flutter / Dart build and tool artifacts
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.pbxuser
+*.perspectivev3
+**/*sync.py
+.idea/
+.vscode/

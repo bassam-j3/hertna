@@ -54,7 +54,6 @@ class AppTheme {
         onPrimary: Colors.white,
         secondary: AppColors.accent,
         surface: AppColors.surface,
-        background: AppColors.background,
         error: AppColors.error,
       ),
       scaffoldBackgroundColor: AppColors.background,

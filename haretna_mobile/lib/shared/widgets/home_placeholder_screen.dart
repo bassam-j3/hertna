@@ -48,7 +48,7 @@ class HomePlaceholderScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.2),
+                      color: AppColors.primary.withValues(alpha: 0.2),
                       blurRadius: 12,
                       offset: const Offset(0, 6),
                     ),
@@ -91,7 +91,7 @@ class HomePlaceholderScreen extends ConsumerWidget {
                                 '${user?.neighborhood ?? "الحي"} - ${user?.city ?? "سوريا"}',
                                 style: GoogleFonts.tajawal(
                                   fontSize: 14,
-                                  color: Colors.white.withOpacity(0.9),
+                                  color: Colors.white.withValues(alpha: 0.9),
                                 ),
                               ),
                             ],
@@ -200,7 +200,7 @@ class HomePlaceholderScreen extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: color, size: 24),

@@ -94,7 +94,7 @@ class _CityNeighborhoodPickerState extends State<CityNeighborhoodPicker> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: _selectedCity,
+              initialValue: _selectedCity,
               icon: const Icon(Icons.arrow_drop_down, color: AppColors.primary),
               decoration: InputDecoration(
                 filled: true,
@@ -143,7 +143,7 @@ class _CityNeighborhoodPickerState extends State<CityNeighborhoodPicker> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: _selectedNeighborhood,
+              initialValue: _selectedNeighborhood,
               icon: const Icon(Icons.arrow_drop_down, color: AppColors.primary),
               decoration: InputDecoration(
                 filled: true,
