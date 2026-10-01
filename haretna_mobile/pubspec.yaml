@@ -1,0 +1,39 @@
+name: haretna_mobile
+description: "Haretna - Community Aid & Services Mobile App (حارتنا)"
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.5.1
+
+  # Networking & HTTP
+  dio: ^5.4.3+1
+  pretty_dio_logger: ^1.3.1
+
+  # Secure Storage
+  flutter_secure_storage: ^9.2.2
+
+  # Routing
+  go_router: ^14.1.4
+
+  # UI & Styling
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10+1
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
