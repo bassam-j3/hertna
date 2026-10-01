@@ -8,10 +8,15 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/home/presentation/screens/main_shell_screen.dart';
+import '../../features/notifications/presentation/screens/notifications_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/swaps/presentation/screens/my_swaps_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   // Use a Listenable that notifies whenever authControllerProvider changes
-  final authNotifier = ValueNotifier<AuthState>(ref.watch(authControllerProvider));
+  final authNotifier =
+      ValueNotifier<AuthState>(ref.watch(authControllerProvider));
   ref.listen<AuthState>(authControllerProvider, (_, next) {
     authNotifier.value = next;
   });
@@ -23,7 +28,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final authState = authNotifier.value;
       final isAuth = authState.isAuthenticated;
       final isInitializing = authState.status == AuthStatus.initial ||
-          (authState.status == AuthStatus.loading && state.matchedLocation == '/splash');
+          (authState.status == AuthStatus.loading &&
+              state.matchedLocation == '/splash');
 
       final isGoingToSplash = state.matchedLocation == '/splash';
       final isGoingToLogin = state.matchedLocation == '/login';
@@ -63,9 +69,44 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
-      GoRoute(
-        path: '/home',
-        builder: (context, state) => const HomeScreen(),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainShellScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/swaps',
+                builder: (context, state) => const MySwapsScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/notifications',
+                builder: (context, state) => const NotificationsScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const ProfileScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

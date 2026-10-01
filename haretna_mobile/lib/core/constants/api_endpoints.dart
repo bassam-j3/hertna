@@ -48,6 +48,7 @@ class ApiEndpoints {
   // Notifications Endpoints (matching NestJS NotificationsController)
   static const String notifications = '/notifications';
   static const String readAllNotifications = '/notifications/read-all';
+  static const String clearAllNotifications = '/notifications/all';
   static String readNotification(String id) => '/notifications/$id/read';
   static String deleteNotification(String id) => '/notifications/$id';
 
