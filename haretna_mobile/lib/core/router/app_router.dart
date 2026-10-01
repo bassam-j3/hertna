@@ -7,7 +7,7 @@ import '../../features/auth/presentation/controllers/auth_state.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
-import '../../shared/widgets/home_placeholder_screen.dart';
+import '../../features/home/presentation/screens/home_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   // Use a Listenable that notifies whenever authControllerProvider changes
@@ -65,7 +65,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/home',
-        builder: (context, state) => const HomePlaceholderScreen(),
+        builder: (context, state) => const HomeScreen(),
       ),
     ],
   );

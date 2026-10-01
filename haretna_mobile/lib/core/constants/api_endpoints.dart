@@ -32,6 +32,10 @@ class ApiEndpoints {
   static const String register = '/auth/register';
   static const String profile = '/auth/me';
 
+  // Posts Endpoints (matching NestJS PostsController)
+  static const String posts = '/posts';
+  static String postDetail(String id) => '/posts/$id';
+
   // Request timeouts
   static const Duration connectTimeout = Duration(seconds: 15);
   static const Duration receiveTimeout = Duration(seconds: 15);
