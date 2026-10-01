@@ -1,14 +1,83 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Visual Studio Code related
+.vscode/
+
+# Flutter repo-specific
+/bin/cache/
+/packages/flutter_tools/test/data/dart_dependencies_test/bad_path/.packages
+/packages/flutter_tools/test/data/dart_dependencies_test/good_path/.packages
+
 # Flutter / Dart build and tool artifacts
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
-build/
-*.mode1v3
-*.mode2v3
-*.moved-aside
-*.pbxuser
-*.perspectivev3
-**/*sync.py
-.idea/
-.vscode/
+.pub-cache/
+.pub/
+/build/
+
+# Symbol processing related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will create this file on each switch to the Android module
+/.idea/modules.xml
+
+# Xcode-related
+**/ios/**/default.mode1v3
+**/ios/**/default.mode2v3
+**/ios/**/default.moved-aside
+**/ios/**/default.pbxuser
+**/ios/**/default.perspectivev3
+!/ios/**/default.mode1v3
+!/ios/**/default.mode2v3
+!/ios/**/default.moved-aside
+!/ios/**/default.pbxuser
+!/ios/**/default.perspectivev3
+**/ios/**/DerivedData/
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Android-related
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+
+.metadata
