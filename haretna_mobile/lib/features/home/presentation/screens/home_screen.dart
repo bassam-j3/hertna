@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants/app_colors.dart';
@@ -22,6 +21,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _searchController = TextEditingController();
   final _scrollController = ScrollController();
+  int _currentNavIndex = 0;
 
   @override
   void initState() {
@@ -168,7 +168,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             icon: const Icon(Icons.notifications_none_rounded),
             tooltip: 'الإشعارات',
             onPressed: () {
-              context.go('/notifications');
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('لا توجد إشعارات جديدة حالياً.')),
+              );
             },
           ),
           IconButton(
@@ -258,6 +260,40 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           'أضف طلباً أو عرضاً',
           style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
         ),
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentNavIndex,
+        onDestinationSelected: (idx) {
+          setState(() => _currentNavIndex = idx);
+          if (idx == 3) {
+            // Profile dialog
+            _showProfileDialog(context, user);
+          }
+        },
+        backgroundColor: Colors.white,
+        indicatorColor: AppColors.primarySurface,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home_rounded, color: AppColors.primary),
+            label: 'الرئيسية',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.volunteer_activism_outlined),
+            selectedIcon: Icon(Icons.volunteer_activism_rounded, color: AppColors.primary),
+            label: 'طلباتي',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.notifications_none_rounded),
+            selectedIcon: Icon(Icons.notifications_rounded, color: AppColors.primary),
+            label: 'الإشعارات',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline_rounded),
+            selectedIcon: Icon(Icons.person_rounded, color: AppColors.primary),
+            label: 'حسابي',
+          ),
+        ],
       ),
     );
   }
@@ -362,6 +398,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           },
         );
       },
+    );
+  }
+
+  void _showProfileDialog(BuildContext context, dynamic user) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(
+          'الملف الشخصي',
+          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('• الاسم: ${user?.name ?? "-"}'),
+            const SizedBox(height: 6),
+            Text('• الهاتف: ${user?.phone ?? "-"}'),
+            const SizedBox(height: 6),
+            Text('• الحي: ${user?.neighborhood ?? "-"} - ${user?.city ?? "-"}'),
+            const SizedBox(height: 6),
+            Text('• نوع الحساب: ${user?.role ?? "-"}'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('إغلاق'),
+          ),
+        ],
+      ),
     );
   }
 }

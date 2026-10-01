@@ -32,23 +32,24 @@ class ApiEndpoints {
   static const String register = '/auth/register';
   static const String profile = '/auth/me';
 
+  // Profile & Users Endpoints
+  static const String updateProfile = '/users/me';
+  static const String updateAvatar = '/users/me/avatar';
+
   // Posts Endpoints (matching NestJS PostsController)
   static const String posts = '/posts';
   static String postDetail(String id) => '/posts/$id';
 
-  // Profile & User Endpoints (matching NestJS UsersController)
-  static const String updateProfile = '/users/me';
-  static const String uploadAvatar = '/users/me/avatar';
-
   // Swaps Endpoints (matching NestJS SwapsController)
   static const String swaps = '/swaps';
   static const String mySwaps = '/swaps/my-swaps';
-  static String updateSwapStatus(String id) => '/swaps/$id/status';
+  static String swapStatus(String id) => '/swaps/$id/status';
 
   // Notifications Endpoints (matching NestJS NotificationsController)
   static const String notifications = '/notifications';
-  static String markNotificationRead(String id) => '/notifications/$id/read';
-  static const String markAllNotificationsRead = '/notifications/read-all';
+  static const String readAllNotifications = '/notifications/read-all';
+  static String readNotification(String id) => '/notifications/$id/read';
+  static String deleteNotification(String id) => '/notifications/$id';
 
   // Request timeouts
   static const Duration connectTimeout = Duration(seconds: 15);

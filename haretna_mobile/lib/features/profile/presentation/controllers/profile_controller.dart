@@ -1,31 +1,32 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/errors/failures.dart';
-import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../domain/entities/user_profile.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../../data/repositories/profile_repository_impl.dart';
 import 'profile_state.dart';
 
 final profileControllerProvider = StateNotifierProvider<ProfileController, ProfileState>((ref) {
   final repository = ref.watch(profileRepositoryProvider);
-  return ProfileController(repository, ref);
+  return ProfileController(repository);
 });
 
 class ProfileController extends StateNotifier<ProfileState> {
   final ProfileRepository _repository;
-  final Ref _ref;
+  final ImagePicker _picker = ImagePicker();
 
-  ProfileController(this._repository, this._ref) : super(const ProfileState()) {
+  ProfileController(this._repository) : super(const ProfileState()) {
     loadProfile();
   }
 
   Future<void> loadProfile() async {
     state = state.copyWith(status: ProfileStatus.loading, errorMessage: null);
     try {
-      final user = await _repository.getProfile();
+      final profile = await _repository.getProfile();
       state = state.copyWith(
         status: ProfileStatus.loaded,
-        user: user,
+        profile: profile,
         errorMessage: null,
       );
     } on Failure catch (f) {
@@ -36,7 +37,7 @@ class ProfileController extends StateNotifier<ProfileState> {
     } catch (e) {
       state = state.copyWith(
         status: ProfileStatus.error,
-        errorMessage: 'تعذر جلب بيانات الحساب: $e',
+        errorMessage: 'تعذر جلب بيانات الملف الشخصي: $e',
       );
     }
   }
@@ -49,21 +50,17 @@ class ProfileController extends StateNotifier<ProfileState> {
   }) async {
     state = state.copyWith(status: ProfileStatus.updating, errorMessage: null, successMessage: null);
     try {
-      final updatedUser = await _repository.updateProfile(
+      final updated = await _repository.updateProfile(
         name: name,
         city: city,
         neighborhood: neighborhood,
         phone: phone,
       );
-
       state = state.copyWith(
         status: ProfileStatus.loaded,
-        user: updatedUser,
-        successMessage: 'تم تحديث بيانات الملف الشخصي بنجاح',
+        profile: updated,
+        successMessage: 'تم تحديث الملف الشخصي بنجاح',
       );
-
-      // Sync with global authController
-      _ref.read(authControllerProvider.notifier).checkSession();
       return true;
     } on Failure catch (f) {
       state = state.copyWith(
@@ -74,43 +71,59 @@ class ProfileController extends StateNotifier<ProfileState> {
     } catch (e) {
       state = state.copyWith(
         status: ProfileStatus.error,
-        errorMessage: 'حدث خطأ أثناء التحديث: $e',
+        errorMessage: 'تعذر تحديث البيانات: $e',
       );
       return false;
     }
   }
 
-  Future<bool> uploadAvatar(List<int> bytes, String filename) async {
-    state = state.copyWith(status: ProfileStatus.uploadingAvatar, errorMessage: null, successMessage: null);
+  Future<bool> pickAndUploadAvatar(ImageSource source) async {
     try {
-      final avatarUrl = await _repository.uploadAvatar(
-        imageBytes: bytes,
-        filename: filename,
+      final picked = await _picker.pickImage(
+        source: source,
+        maxWidth: 600,
+        maxHeight: 600,
+        imageQuality: 85,
+      );
+      if (picked == null) return false;
+
+      state = state.copyWith(
+        status: ProfileStatus.uploadingAvatar,
+        errorMessage: null,
+        successMessage: null,
       );
 
-      if (state.user != null) {
+      final avatarUrl = await _repository.uploadAvatar(picked.path);
+
+      if (state.profile != null) {
+        final updated = UserProfile(
+          id: state.profile!.id,
+          name: state.profile!.name,
+          phone: state.profile!.phone,
+          email: state.profile!.email,
+          city: state.profile!.city,
+          neighborhood: state.profile!.neighborhood,
+          role: state.profile!.role,
+          avatarUrl: avatarUrl.isNotEmpty ? avatarUrl : state.profile!.avatarUrl,
+          trustPoints: state.profile!.trustPoints,
+          postsCount: state.profile!.postsCount,
+          givenRatingsCount: state.profile!.givenRatingsCount,
+          receivedRatingsCount: state.profile!.receivedRatingsCount,
+          createdAt: state.profile!.createdAt,
+        );
         state = state.copyWith(
           status: ProfileStatus.loaded,
-          user: state.user!.copyWith(avatarUrl: avatarUrl),
+          profile: updated,
           successMessage: 'تم تحديث الصورة الشخصية بنجاح',
         );
       } else {
         await loadProfile();
       }
-
-      // Sync with global authController
-      _ref.read(authControllerProvider.notifier).checkSession();
       return true;
-    } on Failure catch (f) {
-      state = state.copyWith(
-        status: ProfileStatus.error,
-        errorMessage: f.message,
-      );
-      return false;
     } catch (e) {
       state = state.copyWith(
         status: ProfileStatus.error,
-        errorMessage: 'تعذر رفع الصورة: $e',
+        errorMessage: 'فشل رفع الصورة: $e',
       );
       return false;
     }

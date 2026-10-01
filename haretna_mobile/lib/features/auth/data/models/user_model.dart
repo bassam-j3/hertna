@@ -10,7 +10,6 @@ class UserModel extends User {
     super.neighborhood,
     super.role = 'user',
     super.avatarUrl,
-    super.trustPoints = 0,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -22,8 +21,7 @@ class UserModel extends User {
       city: json['city'] as String?,
       neighborhood: json['neighborhood'] as String?,
       role: json['role'] as String? ?? 'user',
-      avatarUrl: (json['avatarUrl'] ?? json['avatar']) as String?,
-      trustPoints: (json['trustPoints'] as num?)?.toInt() ?? 0,
+      avatarUrl: json['avatarUrl'] as String?,
     );
   }
 
@@ -37,7 +35,6 @@ class UserModel extends User {
       'neighborhood': neighborhood,
       'role': role,
       'avatarUrl': avatarUrl,
-      'trustPoints': trustPoints,
     };
   }
 }

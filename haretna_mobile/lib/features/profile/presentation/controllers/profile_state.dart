@@ -1,4 +1,4 @@
-import '../../../auth/domain/entities/user.dart';
+import '../../domain/entities/user_profile.dart';
 
 enum ProfileStatus {
   initial,
@@ -11,13 +11,13 @@ enum ProfileStatus {
 
 class ProfileState {
   final ProfileStatus status;
-  final User? user;
+  final UserProfile? profile;
   final String? errorMessage;
   final String? successMessage;
 
   const ProfileState({
     this.status = ProfileStatus.initial,
-    this.user,
+    this.profile,
     this.errorMessage,
     this.successMessage,
   });
@@ -27,13 +27,13 @@ class ProfileState {
 
   ProfileState copyWith({
     ProfileStatus? status,
-    User? user,
+    UserProfile? profile,
     String? errorMessage,
     String? successMessage,
   }) {
     return ProfileState(
       status: status ?? this.status,
-      user: user ?? this.user,
+      profile: profile ?? this.profile,
       errorMessage: errorMessage,
       successMessage: successMessage,
     );

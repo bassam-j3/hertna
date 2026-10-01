@@ -8,10 +8,6 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
-import '../../features/home/presentation/screens/main_shell_screen.dart';
-import '../../features/notifications/presentation/screens/notifications_screen.dart';
-import '../../features/profile/presentation/screens/profile_screen.dart';
-import '../../features/swaps/presentation/screens/my_swaps_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   // Use a Listenable that notifies whenever authControllerProvider changes
@@ -67,48 +63,9 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) {
-          return MainShellScreen(navigationShell: navigationShell);
-        },
-        branches: [
-          // Branch 0: Home Feed
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/home',
-                builder: (context, state) => const HomeScreen(),
-              ),
-            ],
-          ),
-          // Branch 1: My Swaps & Requests
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/swaps',
-                builder: (context, state) => const MySwapsScreen(),
-              ),
-            ],
-          ),
-          // Branch 2: Notifications
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/notifications',
-                builder: (context, state) => const NotificationsScreen(),
-              ),
-            ],
-          ),
-          // Branch 3: Profile
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/profile',
-                builder: (context, state) => const ProfileScreen(),
-              ),
-            ],
-          ),
-        ],
+      GoRoute(
+        path: '/home',
+        builder: (context, state) => const HomeScreen(),
       ),
     ],
   );

@@ -1,17 +1,14 @@
-import '../../../auth/domain/entities/user.dart';
+import '../entities/user_profile.dart';
 
 abstract class ProfileRepository {
-  Future<User> getProfile();
+  Future<UserProfile> getProfile();
 
-  Future<User> updateProfile({
+  Future<UserProfile> updateProfile({
     String? name,
     String? city,
     String? neighborhood,
     String? phone,
   });
 
-  Future<String> uploadAvatar({
-    required List<int> imageBytes,
-    required String filename,
-  });
+  Future<String> uploadAvatar(String filePath);
 }
