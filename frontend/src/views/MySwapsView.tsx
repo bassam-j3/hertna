@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { SwapItem, Rating } from '../types';
+import { SwapItem, Rating, CommunityInitiative } from '../types';
+import { CommunityInitiativesSection } from '../components/CommunityInitiativesSection';
+import { CreateInitiativeModal } from '../components/modals/CreateInitiativeModal';
 import { RateNeighborModal } from '../components/modals/RateNeighborModal';
 import { AutoThankYouModal } from '../components/modals/AutoThankYouModal';
 import { ReturnReminderModal } from '../components/modals/ReturnReminderModal';
@@ -24,6 +26,8 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
   const [activeTab, setActiveTab] = useState<'lends' | 'requests' | 'ratings'>('lends');
   const [confirmedItems, setConfirmedItems] = useState<string[]>([]);
   const [ratingFilter, setRatingFilter] = useState<'all' | '5star' | '4star' | 'comments'>('all');
+  const [initiatives, setInitiatives] = useState<CommunityInitiative[]>([]);
+  const [isCreateInitiativeModalOpen, setIsCreateInitiativeModalOpen] = useState(false);
 
   const handleAddRating = async (ratingData: { rating: number; comment?: string; category?: string }) => {
     try {
@@ -44,6 +48,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
   useEffect(() => {
     loadSwaps();
     loadRatings();
+    loadInitiatives();
   }, []);
 
   const loadRatings = async () => {
@@ -97,6 +102,55 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
       setMyRequests(mappedRequests);
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const loadInitiatives = async () => {
+    try {
+      const { InitiativesService } = await import('../services/apiClient');
+      const data = await InitiativesService.getAll();
+      const mappedInit = (data || []).map((i: any) => ({
+        id: i.id,
+        title: i.title,
+        description: i.description,
+        organizerName: i.organizer?.name || 'مستخدم',
+        organizerAvatar: i.organizer?.avatar || '',
+        category: i.category,
+        categoryLabel: i.categoryLabel,
+        date: i.date,
+        time: i.time,
+        location: i.location,
+        participantsCount: i.participants?.length || 0,
+        maxParticipants: i.maxParticipants,
+        status: i.status === 'UPCOMING' ? 'upcoming' : i.status === 'ACTIVE' ? 'active' : 'completed',
+        image: i.image,
+        isUserJoined: i.participants?.some((p: any) => p.userId === currentUser?.id),
+        joinedUserNames: i.participants?.map((p: any) => p.user?.name) || [],
+      }));
+      setInitiatives(mappedInit);
+    } catch (e) {
+      console.error("Failed to load initiatives", e);
+    }
+  };
+
+  const handleCreateInitiative = async (newInit: any) => {
+    try {
+      const { InitiativesService } = await import('../services/apiClient');
+      await InitiativesService.create(newInit);
+      setIsCreateInitiativeModalOpen(false);
+      loadInitiatives();
+    } catch (e) {
+      console.error("Failed to create initiative", e);
+    }
+  };
+
+  const handleToggleJoinInitiative = async (id: string) => {
+    try {
+      const { InitiativesService } = await import('../services/apiClient');
+      await InitiativesService.join(id);
+      loadInitiatives();
+    } catch (e) {
+      console.error("Failed to toggle join", e);
     }
   };
 
@@ -811,6 +865,21 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
           isDarkMode={isDarkMode}
         />
       )}
+
+      {/* Community Solidarity Projects Section (moved from Home) */}
+      <CommunityInitiativesSection
+        initiatives={initiatives}
+        onToggleJoinInitiative={handleToggleJoinInitiative}
+        onOpenCreateModal={() => setIsCreateInitiativeModalOpen(true)}
+        onSelectInitiative={() => {}}
+      />
+
+      {/* Create Initiative Modal */}
+      <CreateInitiativeModal
+        isOpen={isCreateInitiativeModalOpen}
+        onClose={() => setIsCreateInitiativeModalOpen(false)}
+        onCreateInitiative={handleCreateInitiative}
+      />
     </main>
   );
 };

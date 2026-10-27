@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Post, CommunityInitiative } from '../types';
-import { CommunityInitiativesSection } from '../components/CommunityInitiativesSection';
+// CommunityInitiativesSection moved to MySwapsView (Exchanges page)
 import { fetchItems, BackendPostResponse } from '../services/itemService';
-import { CreateInitiativeModal } from '../components/modals/CreateInitiativeModal';
+// CreateInitiativeModal moved to MySwapsView (Exchanges page)
 import { useAuth } from '../contexts/AuthContext';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { FeedCard } from '../components/FeedCard';
@@ -32,11 +32,11 @@ export const HomeFeed: React.FC<HomeFeedProps> = ({
   const { currentUser, selectedLocation } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
 
-  const [initiatives, setInitiatives] = useState<CommunityInitiative[]>([]);
+  // initiatives state moved to MySwapsView
   const [selectedRadius, setSelectedRadius] = useState<number>(4);
   const [selectedCategory, setSelectedCategory] = useState<string>('الكل');
 
-  const [isCreateInitiativeModalOpen, setIsCreateInitiativeModalOpen] = useState(false);
+  // isCreateInitiativeModalOpen state moved to MySwapsView
 
   /**
    * جلب البيانات من الخادم (Backend) بناءً على موقع المستخدم، نطاق البحث، والتصنيف المختار.
@@ -86,42 +86,9 @@ export const HomeFeed: React.FC<HomeFeedProps> = ({
     }
   }, [selectedRadius, selectedCategory]);
 
-  /**
-   * Fetches community initiatives and maps them to the expected interface.
-   * Memoized to stabilize dependency arrays in useEffects.
-   */
-  const loadInitiatives = useCallback(async () => {
-    try {
-      const { InitiativesService } = await import('../services/apiClient');
-      const data = await InitiativesService.getAll();
-      const mappedInit = data.map((i: Record<string, any>) => ({
-        id: i.id,
-        title: i.title,
-        description: i.description,
-        organizerName: i.organizer?.name || 'مستخدم',
-        organizerAvatar: i.organizer?.avatar || '',
-        category: i.category,
-        categoryLabel: i.categoryLabel,
-        date: i.date,
-        time: i.time,
-        location: i.location,
-        participantsCount: i.participants?.length || 0,
-        maxParticipants: i.maxParticipants,
-        status: i.status === 'UPCOMING' ? 'upcoming' : i.status === 'ACTIVE' ? 'active' : 'completed',
-        image: i.image,
-        isUserJoined: i.participants?.some((p: Record<string, any>) => p.userId === currentUser?.id),
-        joinedUserNames: i.participants?.map((p: Record<string, any>) => p.user?.name) || [],
-      }));
-      setInitiatives(mappedInit);
-    } catch (e) {
-      console.error("Failed to load initiatives", e);
-    }
-  }, [currentUser?.id]);
-
   useEffect(() => {
     loadItems();
-    loadInitiatives();
-  }, [loadItems, loadInitiatives]);
+  }, [loadItems]);
 
   useEffect(() => {
     const handleItemAdded = () => {
@@ -130,49 +97,6 @@ export const HomeFeed: React.FC<HomeFeedProps> = ({
     window.addEventListener('ITEM_ADDED', handleItemAdded);
     return () => window.removeEventListener('ITEM_ADDED', handleItemAdded);
   }, [loadItems]);
-
-  const handleCreateInitiative = async (newInit: {
-    title: string;
-    description: string;
-    category: string;
-    categoryLabel?: string;
-    date: string;
-    time?: string;
-    location?: string;
-    maxParticipants?: number;
-    image?: string;
-    tags?: string[];
-  }) => {
-    try {
-      const { InitiativesService } = await import('../services/apiClient');
-      await InitiativesService.create({
-        title: newInit.title,
-        description: newInit.description,
-        category: newInit.category.toUpperCase(),
-        categoryLabel: newInit.categoryLabel,
-        date: newInit.date,
-        time: newInit.time,
-        location: newInit.location,
-        maxParticipants: newInit.maxParticipants,
-        image: newInit.image,
-        tags: newInit.tags
-      });
-      setIsCreateInitiativeModalOpen(false);
-      loadInitiatives();
-    } catch (e) {
-      console.error("Failed to create initiative", e);
-    }
-  };
-
-  const handleToggleJoinInitiative = async (id: string) => {
-    try {
-      const { InitiativesService } = await import('../services/apiClient');
-      await InitiativesService.join(id);
-      loadInitiatives();
-    } catch (e) {
-      console.error("Failed to toggle join", e);
-    }
-  };
 
   const categories = [
     'الكل',
@@ -259,20 +183,7 @@ export const HomeFeed: React.FC<HomeFeedProps> = ({
         )}
       </section>
 
-      {/* Community Solidarity Projects Section */}
-      <CommunityInitiativesSection
-        initiatives={initiatives}
-        onToggleJoinInitiative={handleToggleJoinInitiative}
-        onOpenCreateModal={() => setIsCreateInitiativeModalOpen(true)}
-        onSelectInitiative={onSelectInitiative}
-      />
-
-      {/* Create Initiative Modal */}
-      <CreateInitiativeModal 
-        isOpen={isCreateInitiativeModalOpen}
-        onClose={() => setIsCreateInitiativeModalOpen(false)}
-        onCreateInitiative={handleCreateInitiative}
-      />
+      {/* Community Initiatives moved to MySwapsView (Exchanges page) */}
 
     </main>
   );

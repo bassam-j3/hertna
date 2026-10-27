@@ -321,9 +321,9 @@ export const SearchView: React.FC<SearchViewProps> = ({ onSelectItem }) => {
 
         {/* Selected Item Card Preview */}
         {selectedItem && (
-          <div className="px-4 pointer-events-auto max-w-md mx-auto w-full transition-all duration-300 transform translate-y-0">
-            <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl p-4 shadow-[0_8px_32px_0_rgba(0,0,0,0.18)] border border-white/60 dark:border-slate-700 flex flex-col gap-3">
-              <div className="flex gap-4 items-center">
+          <div className="px-4 pointer-events-auto max-w-[90vw] sm:max-w-md mx-auto w-full transition-all duration-300 transform translate-y-0">
+            <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-[0_8px_32px_0_rgba(0,0,0,0.18)] border border-white/60 dark:border-slate-700 flex flex-col gap-3 overflow-hidden">
+              <div className="flex gap-3 sm:gap-4 items-center flex-wrap sm:flex-nowrap">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-[#e5eadf] dark:bg-slate-800 flex-shrink-0 flex items-center justify-center relative overflow-hidden shadow-inner">
                   <div
                     className="absolute inset-0 bg-cover bg-center transition-transform hover:scale-110 duration-500"
