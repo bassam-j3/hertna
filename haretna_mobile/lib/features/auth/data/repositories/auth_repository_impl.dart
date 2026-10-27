@@ -23,11 +23,35 @@ class AuthRepositoryImpl implements AuthRepository {
 
   AuthRepositoryImpl(this._remoteDataSource, this._storageService);
 
+  // Super Admin mock credentials for testing
+  static const String _superAdminEmail = 'bassam20047jamm@gmail.com';
+  static const String _superAdminPhone = '0962752582';
+  static const String _superAdminPassword = 'password123';
+
   @override
   Future<User> login({
     required String phone,
     required String password,
   }) async {
+    // Mock Super Admin login for testing
+    if ((phone == _superAdminEmail || phone == _superAdminPhone) &&
+        password == _superAdminPassword) {
+      final superAdminUser = UserModel(
+        id: 'super-admin-001',
+        name: 'Bassam Jammal',
+        phone: _superAdminPhone,
+        email: _superAdminEmail,
+        city: 'دمشق',
+        neighborhood: 'حي الروضة',
+        role: 'super_admin',
+        avatarUrl: null,
+      );
+      await _storageService.saveToken('mock-super-admin-token');
+      await _storageService.saveUserRaw(
+          jsonEncode(superAdminUser.toJson()));
+      return superAdminUser;
+    }
+
     try {
       final result = await _remoteDataSource.login(
         LoginRequest(phone: phone, password: password),

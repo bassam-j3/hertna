@@ -313,10 +313,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             AuthTextField(
               key: const Key('phone_field'),
               controller: _phoneController,
-              label: 'رقم الهاتف',
-              hint: '09xxxxxxxx',
+              label: 'البريد الإلكتروني أو رقم الهاتف',
+              hint: 'bassam20047jamm@gmail.com',
               prefixIcon: Icons.phone_outlined,
-              keyboardType: TextInputType.phone,
+              keyboardType: TextInputType.emailAddress,
               validator: _validatePhone,
             ),
             const SizedBox(height: 18),
@@ -397,6 +397,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
             ),
             const SizedBox(height: 16),
+
+            _buildQuickAccountCard(
+              name: 'Bassam Jammal (Super Admin)',
+              phone: '0962752582',
+              city: 'دمشق',
+              neighborhood: 'دمشق - حي الروضة',
+              avatarUrl:
+                  'https://lh3.googleusercontent.com/aida-public/AB6AXuBdDg8GQS8VQaWBkK_vrXehNKikyg4-m55uQNje0-gXjTvf6QWv6aWwuv1ffy7tRthYcMFhfWNCCtoNYZEBFL5gJCLaXrBIZt6j4IgTagameWRZxP713yfm_RGj4rgfPYRmVz0CLsPsWIWMft6lXYDEWevCaPIhqi-tI6RsD2LcIeSFw4bsMAftwu6bMYX05KsOBOoTLRLNHtG5trrEEEj-nwUwPK8FRC53yaheQMD_5KPcstZZ3KMt',
+            ),
+            const SizedBox(height: 12),
 
             _buildQuickAccountCard(
               name: 'أبو أحمد الدمشقي',

@@ -19,5 +19,8 @@ class User {
     this.avatarUrl,
   });
 
-  bool get isAdmin => role == 'admin' || role == 'moderator';
+  bool get isSuperAdmin => role == 'super_admin';
+  bool get isCommittee => role == 'committee' || role == 'super_admin';
+  bool get isAdmin => isCommittee;
+  bool get isUser => role == 'user';
 }
