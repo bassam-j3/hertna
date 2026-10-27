@@ -5,7 +5,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
 export class SupabaseStorageService implements StorageService {
-  private supabase: SupabaseClient;
+  private supabase?: SupabaseClient;
   private readonly logger = new Logger(SupabaseStorageService.name);
 
   constructor(private configService: ConfigService) {
@@ -13,7 +13,8 @@ export class SupabaseStorageService implements StorageService {
     const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_ROLE_KEY') || this.configService.get<string>('SUPABASE_KEY');
 
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Supabase credentials missing');
+      this.logger.warn('Supabase credentials missing — storage will use local fallback');
+      return;
     }
 
     this.supabase = createClient(supabaseUrl, supabaseKey);
@@ -21,6 +22,9 @@ export class SupabaseStorageService implements StorageService {
   }
 
   async upload(fileBuffer: Buffer, bucket: string, destinationKey: string, mimetype: string): Promise<string> {
+    if (!this.supabase) {
+      throw new Error('Supabase storage not initialized');
+    }
     const { error } = await this.supabase.storage
       .from(bucket)
       .upload(destinationKey, fileBuffer, {
