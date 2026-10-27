@@ -11,6 +11,42 @@ export interface FindPostsQuery {
   lng?: number;
 }
 
+const POST_SELECT = {
+  id: true,
+  title: true,
+  description: true,
+  category: true,
+  type: true,
+  urgent: true,
+  distanceKm: true,
+  location: true,
+  image: true,
+  isAnonymous: true,
+  tags: true,
+  createdAt: true,
+  updatedAt: true,
+  userId: true,
+  user: {
+    select: {
+      id: true,
+      name: true,
+      avatar: true,
+      neighborhood: true,
+      trustPoints: true,
+    }
+  },
+  swapItems: {
+    where: { status: { not: SwapStatus.COMPLETED } },
+    select: {
+      id: true,
+      status: true,
+      borrowerId: true,
+      lenderId: true,
+      createdAt: true,
+    }
+  },
+} as const;
+
 @Injectable()
 /**
  * خدمة الطلبات (Posts Service)
@@ -59,82 +95,14 @@ export class PostsService {
     return this.prisma.post.findMany({
       where,
       orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        category: true,
-        type: true,
-        urgent: true,
-        distanceKm: true,
-        location: true,
-        image: true,
-        isAnonymous: true,
-        tags: true,
-        createdAt: true,
-        updatedAt: true,
-        userId: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true,
-            neighborhood: true,
-            trustPoints: true,
-          }
-        },
-        swapItems: {
-          where: { status: { not: SwapStatus.COMPLETED } },
-          select: {
-            id: true,
-            status: true,
-            borrowerId: true,
-            lenderId: true,
-            createdAt: true,
-          }
-        },
-      }
+      select: POST_SELECT,
     });
   }
 
   async findOne(id: string) {
     const post = await this.prisma.post.findUnique({
       where: { id },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        category: true,
-        type: true,
-        urgent: true,
-        distanceKm: true,
-        location: true,
-        image: true,
-        isAnonymous: true,
-        tags: true,
-        createdAt: true,
-        updatedAt: true,
-        userId: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true,
-            neighborhood: true,
-            trustPoints: true,
-          }
-        },
-        swapItems: {
-          where: { status: { not: SwapStatus.COMPLETED } },
-          select: {
-            id: true,
-            status: true,
-            borrowerId: true,
-            lenderId: true,
-            createdAt: true,
-          }
-        },
-      }
+      select: POST_SELECT,
     });
     
     if (!post) {

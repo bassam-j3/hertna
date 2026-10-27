@@ -5,7 +5,7 @@ import { SwapStatus } from '@prisma/client';
 
 const ALLOWED_TRANSITIONS: Record<SwapStatus, SwapStatus[]> = {
   PENDING: [SwapStatus.ACCEPTED, SwapStatus.CANCELLED],
-  ACCEPTED: [SwapStatus.ACTIVE],
+  ACCEPTED: [SwapStatus.ACTIVE, SwapStatus.CANCELLED],
   ACTIVE: [SwapStatus.COMPLETED, SwapStatus.CANCELLED],
   COMPLETED: [],
   CANCELLED: [],
@@ -63,7 +63,7 @@ export class SwapsService {
   }
 
   // تحديث حالة الطلب والتحقق من أن المستخدم يملك الصلاحية (إما المالك أو المستعير)
-  async updateStatus(id: string, status: string, userId: string) {
+  async updateStatus(id: string, status: SwapStatus, userId: string) {
     const swap = await this.prisma.swapItem.findUnique({
       where: { id },
     });
@@ -76,7 +76,7 @@ export class SwapsService {
       throw new UnauthorizedException('You are not authorized to update this swap');
     }
 
-    const nextStatus = status as SwapStatus;
+    const nextStatus = status;
     if (!Object.values(SwapStatus).includes(nextStatus)) {
       throw new BadRequestException(`Invalid status: ${status}`);
     }

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, UseGuards, Request } from '@
 import { SwapsService } from './swaps.service';
 import { CreateSwapDto } from './dto/create-swap.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { SwapStatus } from '@prisma/client';
 
 @Controller('swaps')
 @UseGuards(JwtAuthGuard)
@@ -30,6 +31,6 @@ export class SwapsController {
     @Body('status') status: string,
     @Request() req,
   ) {
-    return this.swapsService.updateStatus(id, status, req.user.userId);
+    return this.swapsService.updateStatus(id, status as SwapStatus, req.user.userId);
   }
 }

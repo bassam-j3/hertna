@@ -13,7 +13,7 @@ async function main() {
   const hashedPassword = await bcrypt.hash('password123', 10);
 
   const user = await prisma.user.upsert({
-    where: { email: '0933000000@haretna.com' }, // Must use unique field for upsert
+    where: { phone: '0933000000' },
     update: {
       passwordHash: hashedPassword,
       name: 'QA Test User',
@@ -24,7 +24,7 @@ async function main() {
     },
     create: {
       id: 'test-user-0933000000',
-      email: '0933000000@haretna.com',
+
       passwordHash: hashedPassword,
       name: 'QA Test User',
       phone: '0933000000',
@@ -132,7 +132,7 @@ async function main() {
 
   // Seed Second User for Swaps
   const test2User = await prisma.user.upsert({
-    where: { email: 'test2@haretna.com' },
+    where: { phone: '0933000001' },
     update: {
       passwordHash: hashedPassword,
       name: 'Secondary Test User',
@@ -142,7 +142,7 @@ async function main() {
     },
     create: {
       id: 'test-user-0933000001',
-      email: 'test2@haretna.com',
+
       passwordHash: hashedPassword,
       name: 'Secondary Test User',
       phone: '0933000001',
@@ -207,11 +207,11 @@ async function main() {
 
   // Admin Panel Fake Data
   const blockedUser = await prisma.user.upsert({
-    where: { email: 'baduser@haretna.com' },
+    where: { phone: '0933999999' },
     update: { status: 'blocked', warnings: 3 },
     create: {
       id: 'seed-user-blocked',
-      email: 'baduser@haretna.com',
+
       passwordHash: hashedPassword,
       name: 'مستخدم محظور (تجريبي)',
       phone: '0933999999',

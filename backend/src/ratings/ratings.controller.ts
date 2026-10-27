@@ -14,6 +14,7 @@ export class RatingsController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.ratingsService.findAll();
   }
