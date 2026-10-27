@@ -54,14 +54,6 @@ function AppContent() {
         new Date().toISOString(),
         new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString() // ينتهي بعد 3 أيام
       );
-      // محاولة حذف المنشور من الصفحة الرئيسية لأنه أصبح محجوزاً
-      try {
-        const { PostsService } = await import('./services/apiClient');
-        await PostsService.delete(selectedPost.id);
-      } catch (deleteError) {
-        // نتجاهل الخطأ إذا لم يكن المستخدم هو المالك، سيتم إخفاء المنشور عبر طرق أخرى (مثل التحديث في الخلفية)
-        console.warn('Could not delete post, likely not the owner:', deleteError);
-      }
 
       setSelectedPost(null);
       alert('تم تقديم الطلب بنجاح');

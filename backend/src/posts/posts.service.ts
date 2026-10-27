@@ -35,16 +35,6 @@ const POST_SELECT = {
       trustPoints: true,
     }
   },
-  swapItems: {
-    where: { status: { notIn: [SwapStatus.COMPLETED, SwapStatus.CANCELLED] } },
-    select: {
-      id: true,
-      status: true,
-      borrowerId: true,
-      lenderId: true,
-      createdAt: true,
-    }
-  },
 };
 
 @Injectable()
