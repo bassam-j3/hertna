@@ -206,7 +206,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
   };
 
   return (
-    <main className="pt-20 pb-28 px-4 md:px-8 max-w-screen-xl mx-auto rtl transition-colors duration-200">
+    <main className="pt-20 pb-28 px-4 md:px-8 max-w-screen-xl mx-auto rtl transition-colors duration-200 overflow-x-hidden">
       {/* Profile Card */}
       <section className={`${isDarkMode ? 'bg-[#152219] border-slate-800 text-slate-100' : 'bg-white border-[#bfcaba] text-[#181d17]'} rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-[0_4px_16px_rgba(0,0,0,0.04)] border mb-6 relative overflow-hidden transition-colors`}>
         <div className="absolute top-0 right-0 w-32 h-32 bg-[#2e7d32]/10 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
@@ -251,7 +251,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
       </section>
 
       {/* Tabs */}
-      <div className="grid grid-cols-3 gap-1.5 sm:flex sm:gap-2 mb-6 border-b border-[#bfcaba]/60 dark:border-slate-800 pb-2">
+      <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-6 border-b border-[#bfcaba]/60 dark:border-slate-800 pb-2">
         <button
           type="button"
           onClick={() => setActiveTab('lends')}
