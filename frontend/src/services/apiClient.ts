@@ -82,6 +82,7 @@ export const SwapsService = {
  */
 export const RatingsService = {
   create: (data: Partial<Rating>): Promise<Rating> => apiClient.post('/ratings', data).then(res => res.data),
+  getAll: (): Promise<Rating[]> => apiClient.get('/ratings').then(res => res.data),
 };
 
 /**

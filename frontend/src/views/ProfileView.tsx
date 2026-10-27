@@ -1,19 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  PieChart,
-  Pie,
-  Cell,
-  AreaChart,
-  Area,
-  CartesianGrid,
-} from 'recharts';
 import { SAMPLE_LOCATIONS } from '../data/constants';
 import EditProfileModal from '../components/profile/EditProfileModal';
 import SupportTicketModal from '../components/profile/SupportTicketModal';
@@ -32,39 +18,6 @@ interface ProfileViewProps {
   ratings?: Rating[];
 }
 
-// Recharts mock datasets for user activity dashboard
-const monthlyData = [
-  { month: 'مارس', items: 2, helps: 1 },
-  { month: 'أبريل', items: 3, helps: 2 },
-  { month: 'مايو', items: 4, helps: 3 },
-  { month: 'يونيو', items: 5, helps: 4 },
-  { month: 'يوليو', items: 7, helps: 5 },
-  { month: 'أغسطس', items: 6, helps: 5 },
-];
-
-const categoryData = [
-  { name: ' منزلية', count: 6, color: '#0d631b' },
-  { name: 'أجهزة كهربائية', count: 4, color: '#2563eb' },
-  { name: 'مستلزمات طبية', count: 3, color: '#0284c7' },
-  { name: 'أثاث ومفروشات', count: 2, color: '#d97706' },
-];
-
-const ratingBreakdown = [
-  { stars: '5 نجوم', count: 18 },
-  { stars: '4 نجوم', count: 2 },
-  { stars: '3 نجوم', count: 0 },
-  { stars: 'نجمتان', count: 0 },
-  { stars: 'نجمة واحدة', count: 0 },
-];
-
-const AVATAR_PRESETS = [
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCZBLT_yaLwOuRch_thTaTQzGZb37gtyzu-K0GYjqeo4eteM2h2jJ3o6A7aS1eBd50leLwAMCtsoFEKL0YIudXslyY-YAKXQMnoYXe8HpqW-GPtYJtmrTQ34h39gyur_VMoc3vax_btqfZWX0yyNdq4A61neyrSKJerdHZZNEZOzOlUk0LP8F75JSaWe0ZlJqQctHu2k6j32qhB5_2tMQB-RPlAu1iSZEnjRMmZKR4ixvv99ywKDxDt',
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
-];
-
 export const ProfileView: React.FC<ProfileViewProps> = ({
   currentLocation,
   onUpdateLocation,
@@ -77,24 +30,24 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const [activeChartTab, setActiveChartTab] = useState<'monthly' | 'categories' | 'ratings'>('monthly');
   const navigate = useNavigate();
 
-  // Compute dynamic average rating
+  // Compute dynamic average rating from real ratings only; no hardcoded fallback
   const userAvgNum = ratings.length > 0
     ? ratings.reduce((acc, r) => acc + r.rating, 0) / ratings.length
-    : 4.9;
+    : 0;
   const userAvgStr = userAvgNum.toFixed(1);
 
   const { currentUser, login, logout, setIsLoginModalOpen } = useAuth();
 
-  // Editable Profile State
+  // Editable Profile State — seeded from the authenticated user only; no hardcoded defaults
   const [profile, setProfile] = useState({
-    name: currentUser?.name || 'ياسين جمال',
-    bio: 'جار متعاون في حي الروضة - يسعدني إعارة الأدوات المنزلية والطبية لمساعدة أهالي الحي والأسر العائدة.',
-    phone: currentUser?.phone || '+963 944 123 456',
-    job: 'مهندس تقني / متطوع محلي',
-    email: 'yassin.jamal@example.com',
-    avatar: currentUser?.avatar || AVATAR_PRESETS[0],
-    city: currentUser?.city || 'دمشق',
-    neighborhood: currentUser?.neighborhood || 'حي الروضة'
+    name: currentUser?.name || '',
+    bio: currentUser?.bio || '',
+    phone: currentUser?.phone || '',
+    job: '',
+    email: currentUser?.email || '',
+    avatar: currentUser?.avatar || '',
+    city: currentUser?.city || '',
+    neighborhood: currentUser?.neighborhood || ''
   });
 
   // Sync profile state with currentUser when it changes (Fixes stale session data)
@@ -110,14 +63,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       }));
     } else {
       setProfile({
-        name: 'ياسين جمال',
-        bio: 'جار متعاون في حي الروضة - يسعدني إعارة الأدوات المنزلية والطبية لمساعدة أهالي الحي والأسر العائدة.',
-        phone: '+963 944 123 456',
-        job: 'مهندس تقني / متطوع محلي',
-        email: 'yassin.jamal@example.com',
-        avatar: AVATAR_PRESETS[0],
-        city: 'دمشق',
-        neighborhood: 'حي الروضة'
+        name: '',
+        bio: '',
+        phone: '',
+        job: '',
+        email: '',
+        avatar: '',
+        city: '',
+        neighborhood: ''
       });
     }
   }, [currentUser]);
@@ -252,9 +205,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // Calculating summary totals
-  const totalItemsShared = categoryData.reduce((acc, curr) => acc + curr.count, 0);
-  const totalHelps = monthlyData.reduce((acc, curr) => acc + curr.helps, 0);
+  // Calculating summary totals — real data comes from the backend; no mocks
+  const totalItemsShared = 0;
+  const totalHelps = 0;
 
   // Profile Save Handler
   const handleSaveProfile = async (e: React.FormEvent) => {
@@ -495,160 +448,26 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           </div>
         </div>
 
-        {/* Tab 1: Monthly Activity Area Chart */}
+        {/* Chart placeholders — real data comes from the backend; no hardcoded mocks */}
         {activeChartTab === 'monthly' && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-xs text-[#707a6c] dark:text-gray-400 px-1">
-              <div className="flex items-center gap-3 font-semibold">
-                <span className="flex items-center gap-1 text-[#0d631b]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#0d631b] inline-block"></span>
-                  قطع تمت إعارتها
-                </span>
-                <span className="flex items-center gap-1 text-[#fc820c]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#fc820c] inline-block"></span>
-                  أسر تمت مساعدتها
-                </span>
-              </div>
-              <span className="text-[11px] font-bold text-[#0d631b]">آخر 6 أشهر</span>
-            </div>
-
-            <div className="h-56 w-full pt-2">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorItems" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#0d631b" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#0d631b" stopOpacity={0.1} />
-                    </linearGradient>
-                    <linearGradient id="colorHelps" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#fc820c" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#fc820c" stopOpacity={0.1} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#ffffff',
-                      borderRadius: '12px',
-                      border: '1px solid #cbd5e1',
-                      fontSize: '12px',
-                      fontFamily: 'inherit',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                    }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="items"
-                    name="قطع مشاركة"
-                    stroke="#0d631b"
-                    strokeWidth={2.5}
-                    fillOpacity={1}
-                    fill="url(#colorItems)"
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="helps"
-                    name="مرات المساعدة"
-                    stroke="#fc820c"
-                    strokeWidth={2.5}
-                    fillOpacity={1}
-                    fill="url(#colorHelps)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+          <div className="bg-white dark:bg-[#121212] rounded-2xl p-8 border border-[#bfcaba] text-center space-y-3">
+            <span className="material-symbols-outlined text-4xl text-[#707a6c]">insights</span>
+            <p className="text-xs text-[#707a6c] dark:text-gray-400">لا توجد بيانات نشاط متاحة بعد</p>
+            <p className="text-[10px] text-[#40493d] dark:text-gray-500">سيتم عرض لوحة الإحصائيات الشهرية عند توفر بيانات المبادلات الحقيقية.</p>
           </div>
         )}
-
-        {/* Tab 2: Category Breakdown Pie Chart */}
         {activeChartTab === 'categories' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 items-center gap-4 py-2">
-            <div className="h-48 w-full flex items-center justify-center">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={categoryData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={45}
-                    outerRadius={70}
-                    paddingAngle={4}
-                    dataKey="count"
-                  >
-                    {categoryData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value: number) => [`${value} قطع`, 'العدد']}
-                    contentStyle={{
-                      backgroundColor: '#ffffff',
-                      borderRadius: '12px',
-                      border: '1px solid #cbd5e1',
-                      fontSize: '12px',
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="font-bold text-xs text-[#181d17] dark:text-white mb-2">توزيع القطع حسب التصنيف:</h4>
-              {categoryData.map((cat, idx) => (
-                <div key={idx} className="flex items-center justify-between text-xs bg-[#f8faf7] p-2 rounded-xl border border-[#bfcaba]/40">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="w-3 h-3 rounded-md shrink-0"
-                      style={{ backgroundColor: cat.color }}
-                    ></span>
-                    <span className="font-bold text-[#181d17] dark:text-white">{cat.name}</span>
-                  </div>
-                  <span className="font-bold text-[#0d631b]">{cat.count} قطع</span>
-                </div>
-              ))}
-            </div>
+          <div className="bg-white dark:bg-[#121212] rounded-2xl p-8 border border-[#bfcaba] text-center space-y-3">
+            <span className="material-symbols-outlined text-4xl text-[#707a6c]">category</span>
+            <p className="text-xs text-[#707a6c] dark:text-gray-400">لا توجد بيانات تصنيف متاحة بعد</p>
+            <p className="text-[10px] text-[#40493d] dark:text-gray-500">سيتم توزيع القطع حسب التصنيف عند توفر بيانات حقيقية.</p>
           </div>
         )}
-
-        {/* Tab 3: Ratings Bar Chart */}
         {activeChartTab === 'ratings' && (
-          <div className="space-y-3 py-1">
-            <div className="flex items-center justify-between bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-amber-600 text-xl">thumb_up</span>
-                <span className="font-bold text-amber-950">98% انطباع ممتاز من الجيران</span>
-              </div>
-              <span className="bg-amber-600 text-white font-bold px-2 py-0.5 rounded-md text-[10px]">
-                20 تقييماً
-              </span>
-            </div>
-
-            <div className="h-44 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  layout="vertical"
-                  data={ratingBreakdown}
-                  margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
-                >
-                  <XAxis type="number" hide />
-                  <YAxis
-                    dataKey="stars"
-                    type="category"
-                    tick={{ fontSize: 11, fill: '#40493d', fontWeight: 'bold' }}
-                    axisLine={false}
-                    tickLine={false}
-                    width={70}
-                  />
-                  <Tooltip
-                    formatter={(val: number) => [`${val} تقييمات`, 'العدد']}
-                    contentStyle={{ borderRadius: '10px', fontSize: '11px' }}
-                  />
-                  <Bar dataKey="count" fill="#fc820c" radius={[0, 8, 8, 0]} barSize={14} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+          <div className="bg-white dark:bg-[#121212] rounded-2xl p-8 border border-[#bfcaba] text-center space-y-3">
+            <span className="material-symbols-outlined text-4xl text-[#707a6c]">star_rate</span>
+            <p className="text-xs text-[#707a6c] dark:text-gray-400">لا توجد تقييمات متاحة بعد</p>
+            <p className="text-[10px] text-[#40493d] dark:text-gray-500">سيتم عرض التقييمات بعد إكمال أول تبادل مع أحد الجيران.</p>
           </div>
         )}
 

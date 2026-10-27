@@ -19,8 +19,6 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    const email = `${dto.phone}@haretna.com`; // استخدام رقم الهاتف كمعرف أساسي لإنشاء إيميل وهمي للتعامل مع متطلبات النظام
-
     const existingUser = await this.prisma.user.findUnique({
       where: { phone: dto.phone },
     });
@@ -34,7 +32,6 @@ export class AuthService {
 
     const user = await this.prisma.user.create({
       data: {
-        email,
         phone: dto.phone,
         passwordHash,
         name: dto.name,
@@ -43,7 +40,7 @@ export class AuthService {
       },
     });
 
-    const payload = { sub: user.id, email: user.email, phone: user.phone };
+    const payload = { sub: user.id, phone: user.phone };
     const token = this.jwtService.sign(payload);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -52,23 +49,20 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const email = `${dto.phone}@haretna.com`;
-
     const user = await this.prisma.user.findUnique({
-      where: { email },
+      where: { phone: dto.phone },
     });
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // التحقق من مطابقة كلمة المرور المدخلة مع الكلمة المشفرة في قاعدة البيانات
     const isMatch = await bcrypt.compare(dto.password, user.passwordHash);
     if (!isMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user.id, email: user.email, phone: user.phone };
+    const payload = { sub: user.id, phone: user.phone };
     const token = this.jwtService.sign(payload);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

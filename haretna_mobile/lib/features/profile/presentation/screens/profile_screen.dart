@@ -11,6 +11,9 @@ import '../../../auth/presentation/widgets/city_neighborhood_picker.dart';
 import '../controllers/profile_controller.dart';
 import '../controllers/profile_state.dart';
 
+/// Profile screen matching the Stitch "Haretna App" profile design:
+/// white header card with bordered avatar, trusted-neighbor badge and
+/// impact metric tiles, followed by info tiles and actions.
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
@@ -22,8 +25,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   void _showImagePickerSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: AppColors.surfaceLowest,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) {
         return SafeArea(
@@ -74,6 +78,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: AppColors.surfaceLowest,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -161,151 +166,199 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'الملف الشخصي',
-          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+          'حسابي',
+          style: GoogleFonts.cairo(
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
+          ),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
             tooltip: 'تحديث',
-            onPressed: () => ref.read(profileControllerProvider.notifier).loadProfile(),
+            onPressed: () =>
+                ref.read(profileControllerProvider.notifier).loadProfile(),
           ),
         ],
       ),
       body: profileState.isLoading
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.primary))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // Avatar Section
-                  Center(
-                    child: Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 54,
-                          backgroundColor: AppColors.primarySurface,
-                          backgroundImage: (profile?.avatarUrl != null && profile!.avatarUrl!.isNotEmpty)
-                              ? NetworkImage(profile.avatarUrl!)
-                              : null,
-                          child: (profile?.avatarUrl == null || profile!.avatarUrl!.isEmpty)
-                              ? Text(
-                                  (profile?.name.isNotEmpty ?? false) ? profile!.name.substring(0, 1) : 'ح',
-                                  style: GoogleFonts.cairo(
-                                    fontSize: 38,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primary,
-                                  ),
-                                )
-                              : null,
-                        ),
-                        if (profileState.status == ProfileStatus.uploadingAvatar)
-                          Positioned.fill(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.4),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Center(
-                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                              ),
-                            ),
-                          ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: GestureDetector(
-                            onTap: () => _showImagePickerSheet(context),
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
-                                color: AppColors.primary,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: const Icon(
-                                Icons.camera_alt_rounded,
-                                size: 18,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Name & Trust Badge
-                  Text(
-                    profile?.name ?? 'أحد الجيران',
-                    style: GoogleFonts.cairo(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
+                  // ── Header card ─────────────────────────────────────
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: AppColors.accent.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      profile?.trustBadge ?? 'عضو في الحارة',
-                      style: GoogleFonts.cairo(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.accent,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Trust Points Highlight Card
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primary, AppColors.primaryDark],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
+                      color: AppColors.surfaceLowest,
                       borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: AppColors.border.withValues(alpha: 0.2),
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.25),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 6,
                         ),
                       ],
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    child: Column(
                       children: [
-                        _buildStatColumn('نقاط الثقة', '${profile?.trustPoints ?? 0}', Icons.star_rounded),
-                        Container(width: 1, height: 40, color: Colors.white24),
-                        _buildStatColumn('المنشورات', '${profile?.postsCount ?? 0}', Icons.post_add_rounded),
-                        Container(width: 1, height: 40, color: Colors.white24),
-                        _buildStatColumn('التقييمات', '${profile?.receivedRatingsCount ?? 0}', Icons.favorite_rounded),
+                        // Avatar
+                        Center(
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: 96,
+                                height: 96,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.primary.withValues(alpha: 0.1),
+                                  border: Border.all(
+                                    color: AppColors.surface,
+                                    width: 4,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(alpha: 0.12),
+                                      blurRadius: 8,
+                                    ),
+                                  ],
+                                  image: (profile?.avatarUrl != null &&
+                                          profile!.avatarUrl!.isNotEmpty)
+                                      ? DecorationImage(
+                                          image: NetworkImage(profile.avatarUrl!),
+                                          fit: BoxFit.cover,
+                                        )
+                                      : null,
+                                ),
+                                child: (profile?.avatarUrl == null ||
+                                        profile!.avatarUrl!.isEmpty)
+                                    ? Text(
+                                        (profile?.name.isNotEmpty ?? false)
+                                            ? profile!.name.substring(0, 1)
+                                            : 'ح',
+                                        style: GoogleFonts.cairo(
+                                          fontSize: 38,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.primary,
+                                        ),
+                                      )
+                                    : null,
+                              ),
+                              if (profileState.status ==
+                                  ProfileStatus.uploadingAvatar)
+                                const Positioned.fill(
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: GestureDetector(
+                                  onTap: () => _showImagePickerSheet(context),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.primary,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 4,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.camera_alt_rounded,
+                                      size: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          profile?.name ?? 'أحد الجيران',
+                          style: GoogleFonts.cairo(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.verified_rounded,
+                              size: 16,
+                              color: AppColors.primary,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              profile?.trustBadge ?? 'جار موثوق',
+                              style: GoogleFonts.cairo(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        // Impact metric tiles
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildStatTile(
+                                'نقاط الثقة',
+                                '${profile?.trustPoints ?? 0}',
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _buildStatTile(
+                                'المنشورات',
+                                '${profile?.postsCount ?? 0}',
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _buildStatTile(
+                                'التقييمات',
+                                '${profile?.receivedRatingsCount ?? 0}',
+                                color: AppColors.secondary,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 20),
 
-                  // Info Tiles
+                  // ── Info tiles ──────────────────────────────────────
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.surfaceLowest,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.border),
+                      border: Border.all(
+                        color: AppColors.border.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Column(
                       children: [
@@ -318,7 +371,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ListTile(
                           leading: const Icon(Icons.location_on_outlined, color: AppColors.primary),
                           title: const Text('الحي والمدينة'),
-                          subtitle: Text('${profile?.neighborhood ?? "-"}، ${profile?.city ?? "-"}'),
+                          subtitle: Text(
+                              '${profile?.neighborhood ?? "-"}، ${profile?.city ?? "-"}'),
                         ),
                         const Divider(height: 1),
                         ListTile(
@@ -331,7 +385,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Edit Profile Button
+                  // ── Actions ─────────────────────────────────────────
                   AppButton(
                     text: 'تعديل البيانات الشخصية',
                     icon: Icons.edit_note_rounded,
@@ -339,12 +393,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     onPressed: () => _showEditProfileSheet(context, profile),
                   ),
                   const SizedBox(height: 12),
-
-                  // Logout Button
                   AppButton(
                     text: 'تسجيل الخروج',
                     icon: Icons.logout_rounded,
-                    onPressed: () => ref.read(authControllerProvider.notifier).logout(),
+                    onPressed: () =>
+                        ref.read(authControllerProvider.notifier).logout(),
                   ),
                   const SizedBox(height: 32),
                 ],
@@ -353,27 +406,35 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  Widget _buildStatColumn(String label, String value, IconData icon) {
-    return Column(
-      children: [
-        Icon(icon, color: Colors.white, size: 20),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: GoogleFonts.cairo(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+  Widget _buildStatTile(String label, String value, {required Color color}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceLow,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: GoogleFonts.cairo(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
-        ),
-        Text(
-          label,
-          style: GoogleFonts.tajawal(
-            fontSize: 12,
-            color: Colors.white.withValues(alpha: 0.9),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.cairo(
+              fontSize: 11,
+              color: AppColors.textSecondary,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -7,14 +7,12 @@ import { fetchMyLoans, updateExchangeStatus, SwapRecord } from '../services/exch
 import { useAuth } from '../contexts/AuthContext';
 
 interface MySwapsViewProps {
-  ratings?: Rating[];
   onOpenMessage?: (name: string) => void;
   onAddRating?: (ratingData: Omit<Rating, 'id' | 'date'>) => void;
   isDarkMode?: boolean;
 }
 
 export const MySwapsView: React.FC<MySwapsViewProps> = ({
-  ratings = [],
   onOpenMessage = (name) => { },
   onAddRating = (rating) => { },
   isDarkMode = false,
@@ -22,6 +20,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
   const { currentUser } = useAuth();
   const [swapItems, setSwapItems] = useState<SwapItem[]>([]);
   const [myRequests, setMyRequests] = useState<SwapItem[]>([]);
+  const [ratings, setRatings] = useState<Rating[]>([]);
   const [activeTab, setActiveTab] = useState<'lends' | 'requests' | 'ratings'>('lends');
   const [confirmedItems, setConfirmedItems] = useState<string[]>([]);
   const [ratingFilter, setRatingFilter] = useState<'all' | '5star' | '4star' | 'comments'>('all');
@@ -33,10 +32,9 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
         rating: ratingData.rating,
         comment: ratingData.comment || '',
         category: ratingData.category || 'إعارة أداة',
-        targetUserId: ratingTarget?.targetUserId || 'mock-target-id',
+        targetUserId: ratingTarget?.targetUserId || '',
       });
       alert('تم تقييم الجار بنجاح واحتساب النقاط! 🌟');
-      // optionally refresh ratings list here if we fetched them from backend
     } catch (e) {
       console.error(e);
       alert('حدث خطأ أثناء التقييم');
@@ -45,7 +43,19 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
 
   useEffect(() => {
     loadSwaps();
+    loadRatings();
   }, []);
+
+  const loadRatings = async () => {
+    try {
+      const { RatingsService } = await import('../services/apiClient');
+      const data = await RatingsService.getAll();
+      setRatings(data || []);
+    } catch (e) {
+      console.error('Failed to load ratings', e);
+      setRatings([]);
+    }
+  };
 
   const loadSwaps = async () => {
     try {
@@ -63,7 +73,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
         daysRemaining: 'جاري الإعارة',
         daysRemainingNum: 2,
         status: s.status,
-        actionType: s.status === 'pending' ? 'waiting_confirmation' : 'message',
+        actionType: s.status === 'PENDING' ? 'waiting_confirmation' : 'message',
         neighborPhone: s.borrower?.phone || '+963 900 000 000',
       }));
       setSwapItems(mappedLends);
@@ -81,7 +91,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
         daysRemaining: 'استعارة',
         daysRemainingNum: 2,
         status: s.status,
-        actionType: s.status === 'pending' ? 'confirm_receipt' : 'message',
+        actionType: s.status === 'PENDING' ? 'confirm_receipt' : 'message',
         neighborPhone: s.lender?.phone || '+963 900 000 000',
       }));
       setMyRequests(mappedRequests);
@@ -126,7 +136,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
 
   const handleConfirmWithThankYou = async (item: SwapItem, thankYouMsg: string) => {
     try {
-      await updateExchangeStatus(item.id, 'completed');
+      await updateExchangeStatus(item.id, 'COMPLETED');
       setConfirmedItems((prev) => [...prev, item.id]);
       // Open rating modal after confirming receipt
       setRatingTarget({

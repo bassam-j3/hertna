@@ -20,11 +20,13 @@ export class PostsController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll(@Query() query) {
     return this.postsService.findAll(query);
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
     return this.postsService.findOne(id);
   }

@@ -15,7 +15,7 @@ class SwapParty {
 class SwapItemEntity {
   final String id;
   final String title;
-  final String status; // 'pending', 'accepted', 'in_use', 'completed', 'cancelled', 'rejected'
+  final String status; // 'PENDING', 'ACCEPTED', 'ACTIVE', 'COMPLETED', 'CANCELLED'
   final DateTime? startDate;
   final DateTime? dueDate;
   final String? postId;
@@ -35,25 +35,24 @@ class SwapItemEntity {
     required this.isLender,
   });
 
-  bool get isPending => status == 'pending';
-  bool get isAccepted => status == 'accepted';
-  bool get isInUse => status == 'in_use';
-  bool get isCompleted => status == 'completed';
-  bool get isCancelled => status == 'cancelled' || status == 'rejected';
+  bool get isPending => status == 'PENDING';
+  bool get isAccepted => status == 'ACCEPTED';
+  bool get isInUse => status == 'ACTIVE';
+  bool get isCompleted => status == 'COMPLETED';
+  bool get isCancelled => status == 'CANCELLED';
 
   String get statusArabic {
     switch (status) {
-      case 'pending':
+      case 'PENDING':
         return 'بانتظار التأكيد';
-      case 'accepted':
+      case 'ACCEPTED':
         return 'تمت الموافقة';
-      case 'in_use':
+      case 'ACTIVE':
         return 'قيد التبادل / الاستخدام';
-      case 'completed':
+      case 'COMPLETED':
         return 'مكتمل بنجاح';
-      case 'rejected':
-      case 'cancelled':
-        return 'ملغي / مرفوض';
+      case 'CANCELLED':
+        return 'ملغي';
       default:
         return status;
     }

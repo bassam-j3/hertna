@@ -19,6 +19,7 @@ export interface Post {
   status: 'available' | 'lent' | 'reserved';
   dateAdded: string;
   urgentNotice?: string;
+  urgent?: boolean;
   likesCount?: number;
   coords?: { lat: number; lng: number; xPercent?: number; yPercent?: number };
   lat?: number;
@@ -36,7 +37,7 @@ export interface SwapItem {
   dueDate: string;
   daysRemaining: string;
   daysRemainingNum: number;
-  status: 'active' | 'pending' | 'completed';
+  status: 'PENDING' | 'ACCEPTED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
   actionType: 'confirm_receipt' | 'message' | 'waiting_confirmation';
   borrowerId?: string;
   lenderId?: string;

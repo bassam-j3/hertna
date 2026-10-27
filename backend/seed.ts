@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 config();
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, SwapStatus } from '@prisma/client';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as bcrypt from 'bcrypt';
@@ -160,13 +160,13 @@ async function main() {
 
   await prisma.swapItem.upsert({
     where: { id: 'seed-swap-1' },
-    update: { status: 'pending' },
+    update: { status: SwapStatus.PENDING },
     create: {
       id: 'seed-swap-1',
       title: 'طلب استعارة سلم',
       startDate: now,
       dueDate: nextWeek,
-      status: 'pending',
+      status: SwapStatus.PENDING,
       actionType: 'MESSAGE',
       borrowerId: user.id,
       lenderId: test2User.id
@@ -175,13 +175,13 @@ async function main() {
 
   await prisma.swapItem.upsert({
     where: { id: 'seed-swap-2' },
-    update: { status: 'active' },
+    update: { status: SwapStatus.ACTIVE },
     create: {
       id: 'seed-swap-2',
       title: 'إعارة كرسي متحرك',
       startDate: now,
       dueDate: nextWeek,
-      status: 'active',
+      status: SwapStatus.ACTIVE,
       actionType: 'MESSAGE',
       borrowerId: test2User.id,
       lenderId: user.id
@@ -190,13 +190,13 @@ async function main() {
 
   await prisma.swapItem.upsert({
     where: { id: 'seed-swap-3' },
-    update: { status: 'completed' },
+    update: { status: SwapStatus.COMPLETED },
     create: {
       id: 'seed-swap-3',
       title: 'طلب تبرع طعام',
       startDate: now,
       dueDate: now,
-      status: 'completed',
+      status: SwapStatus.COMPLETED,
       actionType: 'MESSAGE',
       borrowerId: user.id,
       lenderId: test2User.id

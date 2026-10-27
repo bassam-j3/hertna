@@ -9,7 +9,7 @@ This document outlines the formal Functional and Non-Functional Requirements for
 Functional requirements define the specific behaviors, features, and functions of the system.
 
 ### 1.1 User Authentication & Authorization (FR-1)
-* **FR-1.1:** The system MUST allow users to register an account using an email, password, name, phone number, and location coordinates.
+* **FR-1.1:** The system MUST allow users to register an account using a phone number, password, name, and location coordinates. Email is optional (nullable) and may be added later for recovery or notifications.
 * **FR-1.2:** The system MUST allow users to log in and receive a secure JWT (JSON Web Token).
 * **FR-1.3:** The system MUST maintain user sessions via `localStorage` and intercept API requests to inject the JWT.
 * **FR-1.4:** The system MUST allow users to log out, which securely clears all local session data.

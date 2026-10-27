@@ -1,6 +1,15 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { CreateSwapDto } from './dto/create-swap.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { SwapStatus } from '@prisma/client';
+
+const ALLOWED_TRANSITIONS: Record<SwapStatus, SwapStatus[]> = {
+  PENDING: [SwapStatus.ACCEPTED, SwapStatus.CANCELLED],
+  ACCEPTED: [SwapStatus.ACTIVE],
+  ACTIVE: [SwapStatus.COMPLETED, SwapStatus.CANCELLED],
+  COMPLETED: [],
+  CANCELLED: [],
+};
 
 @Injectable()
 /**
@@ -20,7 +29,7 @@ export class SwapsService {
         title: createSwapDto.title,
         startDate: new Date(createSwapDto.startDate),
         dueDate: new Date(createSwapDto.dueDate),
-        status: 'pending',
+        status: SwapStatus.PENDING,
         postId: post.id,
         borrowerId: post.userId, // The person who requested the item
         lenderId: currentUserId, // The person who is offering to help
@@ -67,9 +76,21 @@ export class SwapsService {
       throw new UnauthorizedException('You are not authorized to update this swap');
     }
 
+    const nextStatus = status as SwapStatus;
+    if (!Object.values(SwapStatus).includes(nextStatus)) {
+      throw new BadRequestException(`Invalid status: ${status}`);
+    }
+
+    const allowed = ALLOWED_TRANSITIONS[swap.status as SwapStatus];
+    if (!allowed || !allowed.includes(nextStatus)) {
+      throw new BadRequestException(
+        `Illegal swap transition: ${swap.status} → ${nextStatus}. Allowed: ${allowed.join(', ') || 'none'}`,
+      );
+    }
+
     return this.prisma.swapItem.update({
       where: { id },
-      data: { status },
+      data: { status: nextStatus },
     });
   }
 }

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { TopAppBar } from './components/layout/TopAppBar';
-import { BottomNav } from './components/layout/BottomNav';
+import { AppLayout } from './components/layout/AppLayout';
 import { HomeFeed } from './views/HomeFeed';
 import { MySwapsView } from './views/MySwapsView';
 import { ProfileView } from './views/ProfileView';
@@ -30,9 +29,9 @@ function AppContent() {
     await insertItem({
       title: data.title,
       category: data.category,
-      type: data.type === 'gift' ? 'OFFER' : 'REQUEST',
+      type: 'REQUEST',
       description: data.description,
-      urgent: data.type === 'urgent',
+      urgent: data.urgent || false,
       distanceKm: data.distanceKm,
       location: data.locationName,
       image: data.image,
@@ -74,19 +73,16 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-background text-on-background font-body antialiased rtl">
-      {/* إخفاء الشريط العلوي في صفحة الخريطة فقط */}
-      {location.pathname !== '/search' && <TopAppBar />}
-      
+    <>
       <Routes>
-        <Route path="/" element={<HomeFeed onSelectItem={setSelectedPost} onOpenMap={() => navigate('/search')} />} />
-        <Route path="/search" element={<SearchView onSelectItem={setSelectedPost} onOpenMap={() => navigate('/search')} />} />
-        <Route path="/swaps" element={<MySwapsView />} />
-        <Route path="/profile" element={<ProfileView />} />
-        <Route path="/admin" element={<AdminDashboardView />} />
+        <Route element={<AppLayout onAddClick={() => setIsAddModalOpen(true)} />}>
+          <Route path="/" element={<HomeFeed onSelectItem={setSelectedPost} onOpenMap={() => navigate('/search')} />} />
+          <Route path="/search" element={<SearchView onSelectItem={setSelectedPost} onOpenMap={() => navigate('/search')} />} />
+          <Route path="/swaps" element={<MySwapsView />} />
+          <Route path="/profile" element={<ProfileView />} />
+          <Route path="/admin" element={<AdminDashboardView />} />
+        </Route>
       </Routes>
-
-      <BottomNav onAddClick={() => setIsAddModalOpen(true)} />
 
       <AddItemModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
 
@@ -108,7 +104,7 @@ function AppContent() {
           onOpenChat={() => { setSelectedPost(null); alert('تم فتح الدردشة'); }}
         />
       )}
-    </div>
+    </>
   );
 }
 

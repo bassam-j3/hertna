@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma, PostType } from '@prisma/client';
+import { Prisma, PostType, SwapStatus } from '@prisma/client';
 
 export interface FindPostsQuery {
   type?: PostType;
@@ -22,9 +22,11 @@ export class PostsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createPostDto: CreatePostDto, userId: string) {
+    // Demand-driven paradigm: all posts are strictly REQUEST.
     return this.prisma.post.create({
       data: {
         ...createPostDto,
+        type: PostType.REQUEST,
         description: createPostDto.description || '',
         location: createPostDto.location || 'دمشق - حي الروضة',
         userId,
@@ -37,7 +39,7 @@ export class PostsService {
     const where: Prisma.PostWhereInput = {
       swapItems: {
         none: {
-          status: { not: 'cancelled' }
+          status: { not: SwapStatus.CANCELLED }
         }
       }
     };
@@ -57,7 +59,21 @@ export class PostsService {
     return this.prisma.post.findMany({
       where,
       orderBy: { createdAt: 'desc' },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        category: true,
+        type: true,
+        urgent: true,
+        distanceKm: true,
+        location: true,
+        image: true,
+        isAnonymous: true,
+        tags: true,
+        createdAt: true,
+        updatedAt: true,
+        userId: true,
         user: {
           select: {
             id: true,
@@ -66,7 +82,17 @@ export class PostsService {
             neighborhood: true,
             trustPoints: true,
           }
-        }
+        },
+        swapItems: {
+          where: { status: { not: SwapStatus.COMPLETED } },
+          select: {
+            id: true,
+            status: true,
+            borrowerId: true,
+            lenderId: true,
+            createdAt: true,
+          }
+        },
       }
     });
   }
@@ -74,7 +100,21 @@ export class PostsService {
   async findOne(id: string) {
     const post = await this.prisma.post.findUnique({
       where: { id },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        category: true,
+        type: true,
+        urgent: true,
+        distanceKm: true,
+        location: true,
+        image: true,
+        isAnonymous: true,
+        tags: true,
+        createdAt: true,
+        updatedAt: true,
+        userId: true,
         user: {
           select: {
             id: true,
@@ -82,12 +122,18 @@ export class PostsService {
             avatar: true,
             neighborhood: true,
             trustPoints: true,
-            phone: true,
           }
         },
         swapItems: {
-          where: { status: { not: 'completed' } },
-        }
+          where: { status: { not: SwapStatus.COMPLETED } },
+          select: {
+            id: true,
+            status: true,
+            borrowerId: true,
+            lenderId: true,
+            createdAt: true,
+          }
+        },
       }
     });
     

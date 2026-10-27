@@ -3,7 +3,7 @@ import { apiFetch } from './apiClient';
 export interface CreateItemPayload {
   title: string;
   category: string;
-  type: 'OFFER' | 'REQUEST';
+  type: 'REQUEST';
   description?: string;
   duration?: number;
   urgent?: boolean;

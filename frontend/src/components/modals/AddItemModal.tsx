@@ -23,7 +23,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose }) =
     
     setIsSubmitting(true);
     try {
-      let backendType: 'OFFER' | 'REQUEST' = type === 'donation' ? 'OFFER' : 'REQUEST';
+      const backendType: 'REQUEST' = 'REQUEST';
       let backendCategory = category;
 
       if (type === 'urgent') {

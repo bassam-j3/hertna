@@ -7,17 +7,17 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS dynamically for Vite development and any local network requests
+  const allowedOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://localhost:5174').split(',').map(s => s.trim()).filter(Boolean);
+
   app.enableCors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
       
-      const allowedRegex = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):517[0-9]$/;
-      if (allowedRegex.test(origin)) {
+      if (process.env.NODE_ENV !== 'production' && allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-      // Temporarily allow all for the overnight mission to prevent any QA blockers
-      return callback(null, true);
+      return callback(null, false);
     },
     credentials: true,
   });

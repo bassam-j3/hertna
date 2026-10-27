@@ -109,26 +109,28 @@ export const TopAppBar: React.FC = () => {
 
   return (
     <>
-      <header className="bg-surface fixed top-0 w-full z-40 border-b border-outline-variant shadow-sm transition-colors duration-200">
-        <div className="flex items-center justify-between px-container-margin h-16 w-full max-w-screen-xl mx-auto rtl">
-          {/* Brand Logo / Leading */}
-          <Link to="/" className="flex items-center gap-2 cursor-pointer transition-transform hover:scale-105 active:scale-95">
-            <img
-              alt="Haretna Logo"
-              className="h-10 w-10 object-contain rounded-md"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcPZoh8Nkef0hTSPv_uK69kfq9Ltv8r7WPjIWf8iI1DSUKqwL56jzpn_G4asiHIqP4JvQr9XNuVH-AKNRZBEh8dl-VjktgXYdO_qh3aDsMwrvvMth4CJW3JqbkhIPWxQQI_yJJuEBeSDHsms0-0Xz4V6YWm9FzcbY_SS_JVq3FKkZ27Fn9PchKVS6eSHRnCK0hy3ZSmsGYaS-WRj0geWb_M8v70KAeHX2YbVjSi2n4TyiUbCwJlk7N"
-            />
-          </Link>
-
-
-          {/* Trailing Icons */}
+      <header className="bg-surface dark:bg-surface-dim shadow-sm w-full sticky top-0 z-40">
+        <div className="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-stack-sm w-full max-w-container-max mx-auto">
           <div className="flex items-center gap-2">
-
-            <button
+            <span className="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="spa">spa</span>
+            <Link to="/" className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary dark:text-primary-fixed font-bold leading-none decoration-none">
+              حارتنا
+            </Link>
+            {/* Neighborhood Dropdown */}
+            <div className="ml-4 flex items-center bg-surface-container-low rounded-full px-3 py-1.5 cursor-pointer">
+              <span className="font-label-md text-label-md text-on-surface">{selectedLocation?.split(' - ')[0] || 'المهاجرين'}</span>
+              <span className="material-symbols-outlined text-on-surface-variant text-sm ml-1" data-icon="expand_more">expand_more</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-1 bg-surface-container-low rounded-full px-3 py-1">
+              <span className="material-symbols-outlined text-secondary text-sm" data-icon="verified">verified</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant">موثوق</span>
+            </div>
+            <button 
               onClick={() => setIsNotifOpen(true)}
-              className="relative p-2 text-on-surface-variant hover:bg-surface-variant/50 rounded-full transition-colors active:scale-95 duration-150"
-            >
-              <span className="material-symbols-outlined">notifications</span>
+              className="relative text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high transition-colors p-2 rounded-full flex items-center justify-center">
+              <span className="material-symbols-outlined" data-icon="notifications">notifications</span>
               {unreadCount > 0 && (
                 <span className="absolute top-2 right-2 w-3 h-3 bg-error border-2 border-surface rounded-full flex items-center justify-center text-[8px] text-white font-bold">
                   {unreadCount > 9 ? '9+' : unreadCount}

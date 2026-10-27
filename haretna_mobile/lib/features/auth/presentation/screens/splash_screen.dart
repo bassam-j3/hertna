@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../controllers/auth_controller.dart';
 
+/// Splash screen in the Stitch light brand style: soft olive background,
+/// green circular mark, brand name and a green progress indicator.
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
@@ -27,13 +29,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.primaryDark, AppColors.primary, AppColors.primaryLight],
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-          ),
-        ),
+        color: AppColors.background,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -41,20 +37,20 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.primary,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 20,
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),
                 ],
               ),
               child: const Icon(
-                Icons.holiday_village_rounded,
-                size: 72,
-                color: AppColors.primary,
+                Icons.spa_rounded,
+                size: 64,
+                color: Colors.white,
               ),
             ),
             const SizedBox(height: 28),
@@ -63,16 +59,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               style: GoogleFonts.cairo(
                 fontSize: 36,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.primary,
                 letterSpacing: 1.2,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'بوابتك لخدمات وتعاون مجتمعك المحلي',
-              style: GoogleFonts.tajawal(
+              style: GoogleFonts.cairo(
                 fontSize: 16,
-                color: Colors.white.withValues(alpha: 0.9),
+                color: AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: 48),
@@ -81,7 +77,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               height: 32,
               child: CircularProgressIndicator(
                 strokeWidth: 3,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                color: AppColors.primary,
               ),
             ),
           ],

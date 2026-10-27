@@ -56,7 +56,7 @@ class SwapModel extends SwapItemEntity {
     return SwapModel(
       id: json['id'] as String? ?? '',
       title: json['title'] as String? ?? 'مبادلة مجتمعية',
-      status: json['status'] as String? ?? 'pending',
+      status: json['status'] as String? ?? 'PENDING',
       startDate: start,
       dueDate: due,
       postId: json['postId'] as String?,

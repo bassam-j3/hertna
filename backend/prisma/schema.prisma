@@ -30,6 +30,14 @@ enum SwapActionType {
   MESSAGE
 }
 
+enum SwapStatus {
+  PENDING
+  ACCEPTED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
 enum NotificationType {
   REQUEST
   SYSTEM
@@ -39,7 +47,7 @@ enum NotificationType {
 
 model User {
   id               String                  @id @default(uuid())
-  email            String                  @unique
+  email            String?                 @unique
   passwordHash     String
   name             String
   avatar           String?
@@ -90,7 +98,7 @@ model Post {
   title        String
   description  String      @db.Text
   category     String
-  type         PostType    @default(OFFER)
+  type         PostType    @default(REQUEST)
   urgent       Boolean     @default(false)
   distanceKm   Float       @default(0.5)
   location     String
@@ -115,7 +123,7 @@ model SwapItem {
   startDate        DateTime
   dueDate          DateTime
   actionType       SwapActionType @default(MESSAGE)
-  status           String         @default("active") 
+  status           SwapStatus      @default(PENDING)
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
   postId           String?

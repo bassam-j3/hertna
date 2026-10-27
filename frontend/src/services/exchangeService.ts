@@ -5,7 +5,7 @@ export interface SwapRecord {
   title: string;
   startDate: string;
   dueDate: string;
-  status: 'active' | 'pending' | 'completed';
+  status: 'PENDING' | 'ACCEPTED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
   postId?: string;
   borrowerId: string;
   lenderId: string;

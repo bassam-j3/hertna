@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: rootpassword
+          POSTGRES_DB: haretna_db
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U root -d haretna_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Generate Prisma client
+        working-directory: ./backend
+        run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://root:rootpassword@localhost:5432/haretna_db?schema=public
+
+      - name: Run Prisma migrations
+        working-directory: ./backend
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://root:rootpassword@localhost:5432/haretna_db?schema=public
+
+      - name: Seed database
+        working-directory: ./backend
+        run: npx ts-node seed.ts
+        env:
+          DATABASE_URL: postgresql://root:rootpassword@localhost:5432/haretna_db?schema=public
+
+      - name: Start backend
+        working-directory: ./backend
+        run: npm run start:prod &
+        env:
+          DATABASE_URL: postgresql://root:rootpassword@localhost:5432/haretna_db?schema=public
+          JWT_SECRET: haretna_super_secret_key_2026
+          NODE_ENV: production
+          PORT: 3000
+
+      - name: Wait for backend to be ready
+        run: |
+          for i in $(seq 1 30); do
+            curl -s http://localhost:3000/api/posts > /dev/null && exit 0
+            sleep 2
+          done
+          echo "Backend not ready after 60s"
+          exit 1
+
+      - name: Install Playwright for testsprite tests
+        run: npm install -D @playwright/test@^1.48.0
+        working-directory: ./testsprite_backend_tests
+        # Create a minimal package.json so npm install works locally too
+
+      - name: Run testsprite backend tests
+        working-directory: ./testsprite_backend_tests
+        run: npx playwright test
+        env:
+          TARGET_URL: http://localhost:3000

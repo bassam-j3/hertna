@@ -123,6 +123,7 @@ class PostsController extends StateNotifier<PostsState> {
     required String type,
     bool urgent = false,
     String? location,
+    String? image,
   }) async {
     try {
       final newPost = await _repository.createPost(
@@ -132,6 +133,7 @@ class PostsController extends StateNotifier<PostsState> {
         type: type,
         urgent: urgent,
         location: location,
+        image: image,
       );
       // Prepend to current posts list
       state = state.copyWith(

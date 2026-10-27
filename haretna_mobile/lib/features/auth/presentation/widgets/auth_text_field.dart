@@ -21,7 +21,10 @@ class AuthTextField extends StatelessWidget {
     this.suffixIcon,
     this.keyboardType = TextInputType.text,
     this.validator,
+    this.fieldKey,
   });
+
+  final Key? fieldKey;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,7 @@ class AuthTextField extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         TextFormField(
+          key: fieldKey,
           controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,

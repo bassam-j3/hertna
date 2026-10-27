@@ -24,7 +24,7 @@ erDiagram
 
     User {
         String id PK
-        String email
+        String? email          "optional, nullable; phone is the identifier"
         String passwordHash
         String name
         String avatar
@@ -45,7 +45,7 @@ erDiagram
         String title
         String description
         String category
-        PostType type "OFFER or REQUEST"
+        PostType type "REQUEST (demand-driven; OFFER reserved for future)"
         Boolean urgent
         Float distanceKm
         String location
@@ -64,7 +64,7 @@ erDiagram
         DateTime startDate
         DateTime dueDate
         SwapActionType actionType
-        String status
+        SwapStatus status "PENDING → ACCEPTED → ACTIVE → COMPLETED / CANCELLED"
         String postId FK
         String borrowerId FK "Post Owner"
         String lenderId FK "Responder"
