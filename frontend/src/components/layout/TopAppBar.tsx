@@ -112,7 +112,7 @@ export const TopAppBar: React.FC = () => {
       <header className="bg-surface dark:bg-surface-dim shadow-sm w-full sticky top-0 z-40">
         <div className="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-stack-sm w-full max-w-container-max mx-auto">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="spa">spa</span>
+            <img src="/haretna_logo.png" alt="حارتنا" className="w-8 h-8 rounded-lg object-contain" />
             <Link to="/" className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary dark:text-primary-fixed font-bold leading-none decoration-none">
               حارتنا
             </Link>

@@ -151,7 +151,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
         <header className="px-5 py-4 bg-gradient-to-r from-[#0d631b] to-emerald-800 text-white flex items-center justify-between shrink-0 shadow-md">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0 border border-white/30">
-              <span className="material-symbols-outlined text-2xl text-white">login</span>
+              <img src="/haretna_logo.png" alt="حارتنا" className="w-8 h-8 rounded-lg object-contain" />
             </div>
             <div>
               <h3 className="font-extrabold text-base sm:text-lg">صفحة تسجيل الدخول والربط 🔑</h3>
