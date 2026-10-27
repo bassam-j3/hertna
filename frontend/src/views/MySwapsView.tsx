@@ -206,7 +206,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
   };
 
   return (
-    <main className="pt-20 pb-28 px-4 md:px-8 max-w-screen-xl mx-auto rtl transition-colors duration-200 overflow-x-hidden">
+    <main className="pt-20 pb-28 px-4 md:px-8 max-w-full mx-auto rtl transition-colors duration-200 overflow-x-hidden">
       {/* Profile Card */}
       <section className={`${isDarkMode ? 'bg-[#152219] border-slate-800 text-slate-100' : 'bg-white border-[#bfcaba] text-[#181d17]'} rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-[0_4px_16px_rgba(0,0,0,0.04)] border mb-6 relative overflow-hidden transition-colors`}>
         <div className="absolute top-0 right-0 w-32 h-32 bg-[#2e7d32]/10 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
@@ -218,7 +218,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
               alt={currentUser?.name || 'مستخدم'}
             />
           </div>
-          <div className="flex-1 w-full">
+          <div className="flex-1 w-full min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1.5">
               <h2 className="font-bold text-lg sm:text-xl">{currentUser?.name || 'مستخدم'}</h2>
               <span className="bg-[#FFF3E0] dark:bg-amber-950/80 text-[#964900] dark:text-amber-300 px-3 py-1 rounded-full font-bold text-xs inline-flex items-center justify-center gap-1 border border-[#fc820c]/30 self-center sm:self-auto">
@@ -382,7 +382,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
                       </div>
 
                       {/* Details */}
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 overflow-hidden">
                         <div className="flex flex-wrap justify-between items-start gap-1 mb-1">
                           <h3 className="font-bold text-sm sm:text-base leading-snug break-words line-clamp-2 flex-1">
                             {item.title}

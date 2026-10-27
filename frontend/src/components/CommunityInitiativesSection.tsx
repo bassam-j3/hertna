@@ -141,7 +141,7 @@ export const CommunityInitiativesSection: React.FC<CommunityInitiativesSectionPr
 
                 {/* Body Details */}
                 <div
-                  className="p-3.5 space-y-2.5 cursor-pointer flex-1"
+                  className="p-3.5 space-y-2.5 cursor-pointer flex-1 min-w-0"
                   onClick={() => onSelectInitiative(init)}
                 >
                   {/* Organizer info */}
