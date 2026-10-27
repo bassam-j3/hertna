@@ -36,7 +36,7 @@ const POST_SELECT = {
     }
   },
   swapItems: {
-    where: { status: { not: SwapStatus.COMPLETED } },
+    where: { status: { notIn: [SwapStatus.COMPLETED, SwapStatus.CANCELLED] } },
     select: {
       id: true,
       status: true,
@@ -45,7 +45,7 @@ const POST_SELECT = {
       createdAt: true,
     }
   },
-} as const;
+};
 
 @Injectable()
 /**

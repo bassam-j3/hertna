@@ -118,7 +118,7 @@ export const TopAppBar: React.FC = () => {
             </Link>
             {/* Neighborhood Dropdown */}
             <div className="ml-4 flex items-center bg-surface-container-low rounded-full px-3 py-1.5 cursor-pointer">
-              <span className="font-label-md text-label-md text-on-surface">{selectedLocation?.split(' - ')[0] || 'المهاجرين'}</span>
+              <span className="font-label-md text-label-md text-on-surface">{selectedLocation ? selectedLocation.split(' - ')[0] : 'المهاجرين'}</span>
               <span className="material-symbols-outlined text-on-surface-variant text-sm ml-1" data-icon="expand_more">expand_more</span>
             </div>
           </div>

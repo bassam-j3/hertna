@@ -1,5 +1,7 @@
 import React from 'react';
 
+const ALL_DAMASCUS_RADIUS = 999;
+
 interface CategoryFilterProps {
   categories: string[];
   selectedCategory: string;
@@ -34,9 +36,9 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
           </button>
         ))}
         <button
-          onClick={() => onSelectRadius(999)}
+          onClick={() => onSelectRadius(ALL_DAMASCUS_RADIUS)}
           className={`px-3 py-1.5 rounded-full font-label-sm text-label-sm whitespace-nowrap transition-colors ${
-            selectedRadius === 999
+            selectedRadius === ALL_DAMASCUS_RADIUS
               ? 'bg-primary-container text-on-primary-container'
               : 'border border-outline-variant text-on-surface-variant hover:bg-surface-container'
           }`}

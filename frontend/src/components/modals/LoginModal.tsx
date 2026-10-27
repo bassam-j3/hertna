@@ -31,44 +31,7 @@ interface LoginModalProps {
   isDarkMode?: boolean;
 }
 
-export const PRESET_ACCOUNTS: UserProfile[] = [
-  {
-    name: 'أبو أحمد الدمشقي',
-    phone: '0933123456',
-    city: 'دمشق',
-    neighborhood: 'دمشق - حي الروضة',
-    userType: 'donor',
-    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBdDg8GQS8VQaWBkK_vrXehNKikyg4-m55uQNje0-gXjTvf6QWv6aWwuv1ffy7tRthYcMFhfWNCCtoNYZEBFL5gJCLaXrBIZt6j4IgTagameWRZxP713yfm_RGj4rgfPYRmVz0CLsPsWIWMft6lXYDEWevCaPIhqi-tI6RsD2LcIeSFw4bsMAftwu6bMYX05KsOBOoTLRLNHtG5trrEEEj-nwUwPK8FRC53yaheQMD_5KPcstZZ3KMt',
-    isLoggedIn: true,
-  },
-  {
-    name: 'خالد الحمصي',
-    phone: '0931112233',
-    city: 'حمص',
-    neighborhood: 'حمص - حي الإنشاءات',
-    userType: 'resident',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80',
-    isLoggedIn: true,
-  },
-  {
-    name: 'أم حمزة الحموية',
-    phone: '0942223344',
-    city: 'حماة',
-    neighborhood: 'حماة - حي الحاضر',
-    userType: 'resident',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80',
-    isLoggedIn: true,
-  },
-  {
-    name: 'أسرة عائدة حديثاً (هوية محمية)',
-    phone: '0955000111',
-    city: 'دمشق',
-    neighborhood: 'دمشق - حي المزة',
-    userType: 'returning',
-    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-    isLoggedIn: true,
-  },
-];
+
 
 export const LoginModal: React.FC<LoginModalProps> = ({
   isOpen,
@@ -80,7 +43,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const [activeTab, setActiveTab] = useState<'quick' | 'login' | 'register'>('quick');
+  const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -236,16 +199,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({
         {/* Tab Navigation */}
         <div className="flex border-b border-[#ebefe5] dark:border-[#19261c] bg-[#f7fbf0] dark:bg-[#0e1711] p-1.5 gap-1">
           <button
-            onClick={() => setActiveTab('quick')}
-            className={`flex-1 py-2 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1 ${activeTab === 'quick'
-              ? 'bg-[#0d631b] text-white shadow-xs'
-              : 'text-[#40493d] dark:text-[#f1f5f9]/70 hover:bg-[#ebefe5] dark:hover:bg-[#19261c]'
-              }`}
-          >
-            <span className="material-symbols-outlined text-base">group</span>
-            <span>دخول سريع بالحي ⚡</span>
-          </button>
-          <button
             onClick={() => setActiveTab('login')}
             className={`flex-1 py-2 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1 ${activeTab === 'login'
               ? 'bg-[#0d631b] text-white shadow-xs'
@@ -276,77 +229,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             </div>
           )}
 
-          {/* TAB 1: Quick Select Preset Accounts */}
-          {activeTab === 'quick' && (
-            <div className="space-y-3">
-              <label className="block text-xs font-extrabold text-white">
-                اختر حساياً لتسجيل الدخول الفوري وتجربة الميزات:
-              </label>
-
-              <div className="grid grid-cols-1 gap-2.5">
-                {PRESET_ACCOUNTS.map((acc) => (
-                  <div
-                    key={acc.name}
-                    onClick={async () => {
-                      setIsLoading(true);
-                      try {
-                        const res = await AuthService.login({ phone: acc.phone, password: 'password123' });
-                        onLoginSuccess({ ...res.user, isLoggedIn: true });
-                        onClose();
-                      } catch {
-                        try {
-                          const res = await AuthService.register({
-                            name: acc.name,
-                            phone: acc.phone,
-                            password: 'password123',
-                            city: acc.city,
-                            neighborhood: acc.neighborhood,
-                            userType: acc.userType,
-                          });
-                          onLoginSuccess({ ...res.user, isLoggedIn: true });
-                          onClose();
-                        } catch {
-                          setErrorMsg('حدث خطأ أثناء الدخول السريع');
-                        }
-                      } finally {
-                        setIsLoading(false);
-                      }
-                    }}
-                    className="p-3 bg-[#19261c] rounded-2xl border border-[#0d631b]/30 hover:border-[#0d631b] cursor-pointer flex items-center justify-between gap-2 transition-all hover:shadow-xs group"
-                  >
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <img
-                        src={acc.avatar}
-                        alt={acc.name}
-                        className="w-11 h-11 rounded-2xl object-cover border-2 border-emerald-600/40 shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-xs sm:text-sm text-white group-hover:text-[#2e7d32] truncate">
-                          {acc.name}
-                        </h4>
-                        <div className="flex items-center gap-2 text-[11px] text-[#f1f5f9]/60 mt-0.5 truncate">
-                          <span className="font-semibold text-white bg-[#0e1711] px-1.5 py-0.2 rounded shrink-0">
-                            {acc.city}
-                          </span>
-                          <span className="shrink-0">•</span>
-                          <span className="truncate">{acc.neighborhood}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      className="px-3 py-1.5 bg-[#0d631b] text-white rounded-xl text-xs font-bold group-hover:bg-[#16501f] transition-colors shrink-0 shadow-2xs"
-                    >
-                      دخول 🚀
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* TAB 2: Custom Phone/Password Login */}
+          {/* TAB 1: Custom Phone/Password Login */}
           {activeTab === 'login' && (
             <form onSubmit={handleCustomLogin} className="space-y-3">
               <div className="space-y-1">

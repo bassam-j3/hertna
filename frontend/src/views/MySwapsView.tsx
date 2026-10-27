@@ -113,7 +113,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
   // Calculate dynamic overall average rating
   const avgRatingNum = ratings.length > 0
     ? ratings.reduce((acc, curr) => acc + curr.rating, 0) / ratings.length
-    : 4.9;
+    : 0;
   const avgRatingStr = avgRatingNum.toFixed(1);
 
   const count5Star = ratings.filter((r) => Math.round(r.rating) === 5).length;
@@ -161,12 +161,12 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
             <img
               className="w-full h-full rounded-full object-cover"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZBLT_yaLwOuRch_thTaTQzGZb37gtyzu-K0GYjqeo4eteM2h2jJ3o6A7aS1eBd50leLwAMCtsoFEKL0YIudXslyY-YAKXQMnoYXe8HpqW-GPtYJtmrTQ34h39gyur_VMoc3vax_btqfZWX0yyNdq4A61neyrSKJerdHZZNEZOzOlUk0LP8F75JSaWe0ZlJqQctHu2k6j32qhB5_2tMQB-RPlAu1iSZEnjRMmZKR4ixvv99ywKDxDt"
-              alt="ياسين جمال"
+              alt={currentUser?.name || 'مستخدم'}
             />
           </div>
           <div className="flex-1 w-full">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1.5">
-              <h2 className="font-bold text-lg sm:text-xl">ياسين جمال</h2>
+              <h2 className="font-bold text-lg sm:text-xl">{currentUser?.name || 'مستخدم'}</h2>
               <span className="bg-[#FFF3E0] dark:bg-amber-950/80 text-[#964900] dark:text-amber-300 px-3 py-1 rounded-full font-bold text-xs inline-flex items-center justify-center gap-1 border border-[#fc820c]/30 self-center sm:self-auto">
                 <span
                   className="material-symbols-outlined text-[14px] text-[#fc820c] fill"
@@ -181,11 +181,11 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-2 text-xs">
               <span className={`${isDarkMode ? 'bg-slate-800 text-slate-300' : 'bg-[#ebefe5] text-[#40493d]'} px-2.5 py-1 rounded-full font-bold flex items-center gap-1`}>
                 <span className="material-symbols-outlined text-[14px]">location_on</span>
-                <span>حي الروضة</span>
+                <span>{currentUser?.neighborhood || 'حي غير محدد'}</span>
               </span>
               <span className={`${isDarkMode ? 'bg-emerald-950/60 text-emerald-400 border-emerald-800/40' : 'bg-emerald-50 text-[#0d631b] border-emerald-200'} px-2.5 py-1 rounded-full font-bold border flex items-center gap-1`}>
                 <span className="material-symbols-outlined text-[14px]">handshake</span>
-                <span>12 إعارة ناجحة</span>
+                <span>{swapItems.filter(s => s.status === 'COMPLETED').length} إعارة ناجحة</span>
               </span>
             </div>
 
