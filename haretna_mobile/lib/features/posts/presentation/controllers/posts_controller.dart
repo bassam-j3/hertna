@@ -135,10 +135,7 @@ class PostsController extends StateNotifier<PostsState> {
         location: location,
         image: image,
       );
-      // Prepend to current posts list
-      state = state.copyWith(
-        posts: [newPost, ...state.posts],
-      );
+      // Do NOT prepend to Home feed — new posts appear only on Exchanges page
       return true;
     } catch (e) {
       return false;
