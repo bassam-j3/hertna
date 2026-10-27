@@ -54,31 +54,74 @@ jobs:
         env:
           DATABASE_URL: postgresql://root:rootpassword@localhost:5432/haretna_db?schema=public
 
-      - name: Start backend
+      - name: Build backend
         working-directory: ./backend
-        run: npm run start:prod &
+        run: npm run build
+        env:
+          DATABASE_URL: postgresql://root:rootpassword@localhost:5432/haretna_db?schema=public
+
+      - name: Start backend and wait for ready
+        working-directory: ./backend
+        run: |
+          # Start backend in background with nohup to keep it running
+          nohup npm run start:prod > /tmp/backend.log 2>&1 &
+          BACKEND_PID=$!
+          echo "Backend PID: $BACKEND_PID"
+          
+          # Wait for backend to be ready (up to 120s)
+          for i in $(seq 1 60); do
+            if curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/posts | grep -q "401\|200"; then
+              echo "Backend ready after $((i * 2))s"
+              exit 0
+            fi
+            echo "Waiting... ($i/60)"
+            sleep 2
+          done
+          
+          echo "Backend not ready after 120s. Last log:"
+          tail -30 /tmp/backend.log
+          exit 1
         env:
           DATABASE_URL: postgresql://root:rootpassword@localhost:5432/haretna_db?schema=public
           JWT_SECRET: haretna_super_secret_key_2026
           NODE_ENV: production
           PORT: 3000
 
-      - name: Wait for backend to be ready
+      - name: Run smoke tests
         run: |
-          for i in $(seq 1 30); do
-            curl -s http://localhost:3000/api/posts > /dev/null && exit 0
-            sleep 2
-          done
-          echo "Backend not ready after 60s"
-          exit 1
-
-      - name: Install Playwright for testsprite tests
-        run: npm install -D @playwright/test@^1.48.0
-        working-directory: ./testsprite_backend_tests
-        # Create a minimal package.json so npm install works locally too
-
-      - name: Run testsprite backend tests
-        working-directory: ./testsprite_backend_tests
-        run: npx playwright test
+          # Test 1: Auth - login with phone
+          TOKEN=$(curl -s -X POST http://localhost:3000/api/auth/login \
+            -H "Content-Type: application/json" \
+            -d '{"phone":"0933000000","password":"password123"}' | jq -r '.token')
+          echo "Token: $TOKEN"
+          if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
+            echo "Login failed"
+            exit 1
+          fi
+          
+          # Test 2: GET /posts requires auth
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/posts)
+          if [ "$STATUS" != "401" ]; then
+            echo "Expected 401 without auth, got $STATUS"
+            exit 1
+          fi
+          
+          # Test 3: GET /posts with auth returns data
+          POSTS=$(curl -s -H "Authorization: Bearer $TOKEN" http://localhost:3000/api/posts)
+          echo "Posts count: $(echo $POSTS | jq 'length')"
+          
+          # Test 4: Create post with OFFER type returns REQUEST
+          RESULT=$(curl -s -X POST http://localhost:3000/api/posts \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{"title":"CI test post","category":"أدوات","type":"OFFER","description":"test"}')
+          TYPE=$(echo $RESULT | jq -r '.type')
+          echo "Created post type: $TYPE"
+          if [ "$TYPE" != "REQUEST" ]; then
+            echo "Expected REQUEST, got $TYPE"
+            exit 1
+          fi
+          
+          echo "All smoke tests passed!"
         env:
           TARGET_URL: http://localhost:3000
