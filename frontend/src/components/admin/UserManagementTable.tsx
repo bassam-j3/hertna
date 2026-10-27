@@ -8,6 +8,7 @@ interface UserManagementTableProps {
   activateUser: (id: string) => void;
   promoteUser: (id: string) => void;
   actionLoading?: Record<string, boolean>;
+  currentUserRole?: string;
 }
 
 export default function UserManagementTable({
@@ -17,6 +18,7 @@ export default function UserManagementTable({
   activateUser,
   promoteUser,
   actionLoading = {},
+  currentUserRole,
 }: UserManagementTableProps) {
   return (
     <div className="bg-white dark:bg-[#121212] rounded-2xl shadow-sm border border-[#bfcaba] dark:border-[#333] overflow-hidden">
@@ -125,7 +127,7 @@ export default function UserManagementTable({
                         </button>
                       )}
 
-                      {user.userType !== 'committee' && user.userType !== 'admin' && (
+                      {currentUserRole === 'super_admin' && user.userType !== 'committee' && user.userType !== 'admin' && (
                         <button
                           disabled={isAnyLoading}
                           onClick={() => promoteUser(user.id)}

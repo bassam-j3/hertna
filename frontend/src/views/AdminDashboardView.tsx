@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminData } from '../hooks/useAdminData';
+import { isSuperAdmin } from '../utils/roles';
 import { useAuth } from '../contexts/AuthContext';
 import UserManagementTable from '../components/admin/UserManagementTable';
 import TicketsInbox from '../components/admin/TicketsInbox';
@@ -41,7 +42,7 @@ export default function AdminDashboardView() {
   // حماية المسار (Route Guard): إذا لم يكن المستخدم "لجنة" أو "مشرف"، يتم توجيهه للرئيسية
   useEffect(() => {
     if (isLoading) return;
-    if (!currentUser || (currentUser.userType !== 'committee' && currentUser.userType !== 'admin')) {
+    if (!currentUser || (currentUser.userType !== 'committee' && currentUser.userType !== 'admin' && currentUser.userType !== 'super_admin')) {
       navigate('/');
       return;
     }
@@ -380,6 +381,7 @@ export default function AdminDashboardView() {
             activateUser={activateUser}
             promoteUser={promoteUser}
             actionLoading={actionLoading}
+            currentUserRole={currentUser?.userType}
           />
         )}
 
