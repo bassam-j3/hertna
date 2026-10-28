@@ -37,6 +37,8 @@ export class AuthService {
         name: dto.name,
         city: dto.city,
         neighborhood: dto.neighborhood,
+        lat: dto.lat ?? 33.5138,
+        lng: dto.lng ?? 36.2765,
       },
     });
 

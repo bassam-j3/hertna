@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { SwapItem, Rating, CommunityInitiative } from '../types';
 import { CommunityInitiativesSection } from '../components/CommunityInitiativesSection';
 import { CreateInitiativeModal } from '../components/modals/CreateInitiativeModal';
@@ -27,8 +27,13 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
   const [confirmedItems, setConfirmedItems] = useState<string[]>([]);
   const [ratingFilter, setRatingFilter] = useState<'all' | '5star' | '4star' | 'comments'>('all');
   const [initiatives, setInitiatives] = useState<CommunityInitiative[]>([]);
-  const activeInitiatives = initiatives.filter((i) => i.status !== 'completed');
   const [isCreateInitiativeModalOpen, setIsCreateInitiativeModalOpen] = useState(false);
+  const activeInitiatives = initiatives.filter((i) => i.status !== 'completed');
+
+  const activeSwaps = useMemo(() => swapItems.filter(s => s.status !== 'COMPLETED' && s.status !== 'CANCELLED'), [swapItems]);
+  const completedSwaps = useMemo(() => swapItems.filter(s => s.status === 'COMPLETED' || s.status === 'CANCELLED'), [swapItems]);
+  const activeRequests = useMemo(() => myRequests.filter(s => s.status !== 'COMPLETED' && s.status !== 'CANCELLED'), [myRequests]);
+  const completedRequests = useMemo(() => myRequests.filter(s => s.status === 'COMPLETED' || s.status === 'CANCELLED'), [myRequests]);
 
   const handleAddRating = async (ratingData: { rating: number; comment?: string; category?: string }) => {
     try {
@@ -267,7 +272,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
           <span className="truncate">جيران أساعدهم</span>
           <span className={`px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs font-extrabold ${activeTab === 'lends' ? 'bg-white/20 text-white' : 'bg-[#2e7d32]/10 text-[#0d631b]'
             }`}>
-            {swapItems.filter(s => s.status !== 'COMPLETED' && s.status !== 'CANCELLED').length}
+            {activeSwaps.length}
           </span>
         </button>
 
@@ -285,7 +290,7 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
           <span className="truncate">طلباتي</span>
           <span className={`px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold ${activeTab === 'requests' ? 'bg-white/20 text-white' : 'bg-gray-100 text-[#40493d]'
             }`}>
-            {myRequests.filter(s => s.status !== 'COMPLETED' && s.status !== 'CANCELLED').length}
+            {activeRequests.length}
           </span>
         </button>
 
@@ -339,13 +344,13 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {swapItems.filter(s => s.status !== 'COMPLETED' && s.status !== 'CANCELLED').length === 0 ? (
+            {activeSwaps.length === 0 ? (
               <div className={`col-span-full ${isDarkMode ? 'bg-[#152219] border-slate-800 text-slate-300' : 'bg-white border-[#bfcaba] text-[#181d17]'} rounded-2xl p-8 border text-center space-y-2`}>
                 <span className="material-symbols-outlined text-4xl text-[#707a6c]">volunteer_activism</span>
                 <p className="font-bold">لا توجد مساعدات جارية حالياً</p>
               </div>
             ) : (
-              swapItems.filter(s => s.status !== 'COMPLETED' && s.status !== 'CANCELLED').map((item) => {
+              activeSwaps.map((item) => {
                 const isConfirmed = confirmedItems.includes(item.id);
                 const isDueTomorrow = item.daysRemainingNum === 1 || item.daysRemaining.includes('يوم');
                 return (
@@ -466,13 +471,13 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
       {/* Tab 2: My Requests */}
       {activeTab === 'requests' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {myRequests.filter(s => s.status !== 'COMPLETED' && s.status !== 'CANCELLED').length === 0 ? (
+          {activeRequests.length === 0 ? (
             <div className={`col-span-full ${isDarkMode ? 'bg-[#152219] border-slate-800 text-slate-300' : 'bg-white border-[#bfcaba] text-[#181d17]'} rounded-2xl p-8 border text-center space-y-2`}>
               <span className="material-symbols-outlined text-4xl text-[#707a6c]">inbox</span>
               <p className="font-bold">لا توجد طلبات جارية حالياً</p>
             </div>
           ) : (
-            myRequests.filter(s => s.status !== 'COMPLETED' && s.status !== 'CANCELLED').map((req) => (
+            activeRequests.map((req) => (
               <article
                 key={req.id}
                 className={`${isDarkMode
@@ -876,14 +881,14 @@ export const MySwapsView: React.FC<MySwapsViewProps> = ({
       />
 
       {/* History / Completed Section */}
-      {(swapItems.filter(s => s.status === 'COMPLETED' || s.status === 'CANCELLED').length > 0 || myRequests.filter(s => s.status === 'COMPLETED' || s.status === 'CANCELLED').length > 0) && (
+      {(completedSwaps.length > 0 || completedRequests.length > 0) && (
         <section className={`${isDarkMode ? 'bg-[#152219] border-slate-800 text-slate-100' : 'bg-white border-[#bfcaba] text-[#181d17]'} rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-[0_4px_16px_rgba(0,0,0,0.04)] border mb-6 relative overflow-hidden transition-colors`}>
           <h3 className="font-bold text-lg sm:text-xl mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-[#0d631b]">history</span>
             <span>سجل المبادلات المكتملة</span>
           </h3>
           <div className="space-y-3">
-            {[...swapItems.filter(s => s.status === 'COMPLETED' || s.status === 'CANCELLED'), ...myRequests.filter(s => s.status === 'COMPLETED' || s.status === 'CANCELLED')].map((item) => (
+            {[...completedSwaps, ...completedRequests].map((item) => (
               <div key={item.id} className={`${isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-[#f8faf7] border-[#bfcaba]/60'} rounded-xl p-3 border flex items-center gap-3`}>
                 <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-gray-100">
                   <img src={item.image} alt={item.title} className="w-full h-full object-cover" />

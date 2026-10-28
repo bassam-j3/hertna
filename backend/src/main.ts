@@ -10,11 +10,15 @@ async function bootstrap() {
   const defaultOrigins = process.env.NODE_ENV !== 'production' ? 'http://localhost:5173,http://localhost:5174' : '';
   const allowedOrigins = (process.env.CORS_ORIGINS ?? defaultOrigins).split(',').map(s => s.trim()).filter(Boolean);
 
+  if (process.env.NODE_ENV === 'production' && allowedOrigins.length === 0) {
+    throw new Error('CORS_ORIGINS must be set in production');
+  }
+
   app.enableCors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
-      
+
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }

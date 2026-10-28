@@ -26,4 +26,10 @@ export class RegisterDto {
   @IsOptional()
   @IsIn(['resident', 'returning', 'donor', 'committee', 'user'])
   userType?: string;
+
+  @IsOptional()
+  lat?: number;
+
+  @IsOptional()
+  lng?: number;
 }

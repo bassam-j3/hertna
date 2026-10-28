@@ -27,7 +27,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onOpenLogin,
   ratings = [],
 }) => {
-  const [activeChartTab, setActiveChartTab] = useState<'monthly' | 'categories' | 'ratings'>('monthly');
+  // activeChartTab removed - charts are coming soon (no hardcoded data)
   const navigate = useNavigate();
 
   // Compute dynamic average rating from real ratings only; no hardcoded fallback
@@ -416,60 +416,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </div>
           </div>
 
-          {/* Chart Selector Tabs */}
-          <div className="flex bg-[#f1f5eb] p-1 rounded-xl text-xs font-bold gap-1 border border-[#bfcaba]/30">
-            <button
-              onClick={() => setActiveChartTab('monthly')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${activeChartTab === 'monthly'
-                ? 'bg-[#0d631b] text-white shadow-2xs'
-                : 'text-[#40493d] dark:text-gray-200 hover:bg-white dark:bg-[#121212]/50'
-                }`}
-            >
-              النشاط الشهري
-            </button>
-            <button
-              onClick={() => setActiveChartTab('categories')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${activeChartTab === 'categories'
-                ? 'bg-[#0d631b] text-white shadow-2xs'
-                : 'text-[#40493d] dark:text-gray-200 hover:bg-white dark:bg-[#121212]/50'
-                }`}
-            >
-              التصنيفات
-            </button>
-            <button
-              onClick={() => setActiveChartTab('ratings')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${activeChartTab === 'ratings'
-                ? 'bg-[#0d631b] text-white shadow-2xs'
-                : 'text-[#40493d] dark:text-gray-200 hover:bg-white dark:bg-[#121212]/50'
-                }`}
-            >
-              التقييمات
-            </button>
-          </div>
-        </div>
-
-        {/* Chart placeholders — real data comes from the backend; no hardcoded mocks */}
-        {activeChartTab === 'monthly' && (
+          {/* Charts coming soon - real data from backend */}
           <div className="bg-white dark:bg-[#121212] rounded-2xl p-8 border border-[#bfcaba] text-center space-y-3">
             <span className="material-symbols-outlined text-4xl text-[#707a6c]">insights</span>
-            <p className="text-xs text-[#707a6c] dark:text-gray-400">لا توجد بيانات نشاط متاحة بعد</p>
-            <p className="text-[10px] text-[#40493d] dark:text-gray-500">سيتم عرض لوحة الإحصائيات الشهرية عند توفر بيانات المبادلات الحقيقية.</p>
+            <p className="text-xs text-[#707a6c] dark:text-gray-400">لا توجد بيانات كافية لعرض الرسوم البيانية</p>
+            <p className="text-[10px] text-[#40493d] dark:text-gray-500">سيتم عرض رسوم بيانية حقيقية once enough data is collected.</p>
           </div>
-        )}
-        {activeChartTab === 'categories' && (
-          <div className="bg-white dark:bg-[#121212] rounded-2xl p-8 border border-[#bfcaba] text-center space-y-3">
-            <span className="material-symbols-outlined text-4xl text-[#707a6c]">category</span>
-            <p className="text-xs text-[#707a6c] dark:text-gray-400">لا توجد بيانات تصنيف متاحة بعد</p>
-            <p className="text-[10px] text-[#40493d] dark:text-gray-500">سيتم توزيع القطع حسب التصنيف عند توفر بيانات حقيقية.</p>
-          </div>
-        )}
-        {activeChartTab === 'ratings' && (
-          <div className="bg-white dark:bg-[#121212] rounded-2xl p-8 border border-[#bfcaba] text-center space-y-3">
-            <span className="material-symbols-outlined text-4xl text-[#707a6c]">star_rate</span>
-            <p className="text-xs text-[#707a6c] dark:text-gray-400">لا توجد تقييمات متاحة بعد</p>
-            <p className="text-[10px] text-[#40493d] dark:text-gray-500">سيتم عرض التقييمات بعد إكمال أول تبادل مع أحد الجيران.</p>
-          </div>
-        )}
+        </div>
 
         {/* Impact Footer Badge */}
         <div className="bg-[#0d631b]/5 p-3 rounded-xl border border-[#0d631b]/20 flex items-center justify-between text-xs text-[#0d631b]">
