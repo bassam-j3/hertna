@@ -87,6 +87,10 @@ jobs:
           NODE_ENV: production
           PORT: 3000
 
+      - name: Typecheck frontend
+        working-directory: ./frontend
+        run: npx tsc --noEmit
+
       - name: Run smoke tests
         run: |
           # Test 1: Auth - login with phone

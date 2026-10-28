@@ -53,7 +53,7 @@ export const AddPostModal: React.FC<AddPostModalProps> = ({
       category: category || 'أدوات منزلية',
       maxDays: postType === 'loan' ? maxDays : undefined,
       image: imageUrl || (postType === 'gift' ? sampleImages[2].url : sampleImages[0].url),
-      ownerName: isAnonymous ? 'أسرة متعففة بالحي (هوية مستورة 🛡️)' : 'ياسين جمال',
+      ownerName: isAnonymous ? '������ ����� (���� ����� ???)' : '������',
       ownerAvatar: isAnonymous ? 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=150&q=80' : 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZBLT_yaLwOuRch_thTaTQzGZb37gtyzu-K0GYjqeo4eteM2h2jJ3o6A7aS1eBd50leLwAMCtsoFEKL0YIudXslyY-YAKXQMnoYXe8HpqW-GPtYJtmrTQ34h39gyur_VMoc3vax_btqfZWX0yyNdq4A61neyrSKJerdHZZNEZOzOlUk0LP8F75JSaWe0ZlJqQctHu2k6j32qhB5_2tMQB-RPlAu1iSZEnjRMmZKR4ixvv99ywKDxDt',
       ownerRating: 4.9,
       distanceKm: 0.3,
@@ -364,3 +364,6 @@ export const AddPostModal: React.FC<AddPostModalProps> = ({
     </div>
   );
 };
+
+
+

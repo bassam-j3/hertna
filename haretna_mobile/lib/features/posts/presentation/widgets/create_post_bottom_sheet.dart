@@ -64,7 +64,7 @@ class _CreatePostBottomSheetState extends ConsumerState<CreatePostBottomSheet> {
 
   bool get _isRequest => _postKind == 'request';
 
-  String get _type => _isRequest ? 'REQUEST' : 'OFFER';
+  String get _type => 'REQUEST'; // All posts are REQUEST (demand-driven)
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();

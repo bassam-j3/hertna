@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma, PostType, SwapStatus } from '@prisma/client';
+import { Prisma, PostType } from '@prisma/client';
 
 export interface FindPostsQuery {
   type?: PostType;
@@ -57,18 +57,13 @@ export class PostsService {
         location: createPostDto.location || 'دمشق - حي الروضة',
         userId,
       },
+      select: POST_SELECT,
     });
   }
 
   // جلب الطلبات من الداتابيز. إذا تم تمرير إحداثيات، يتم حساب المسافة (Geospatial logic)
   async findAll(query: FindPostsQuery) {
-    const where: Prisma.PostWhereInput = {
-      swapItems: {
-        none: {
-          status: { not: SwapStatus.CANCELLED }
-        }
-      }
-    };
+    const where: Prisma.PostWhereInput = {};
     if (query.type) {
       where.type = query.type;
     }

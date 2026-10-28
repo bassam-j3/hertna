@@ -51,7 +51,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
     setHasPledged(true);
     setShowPledgeModal(false);
     setIsSubmitting(true);
-    const finalRequesterName = isAnonymousSharing ? 'جار مجهول' : 'ياسين جمال';
+    const finalRequesterName = isAnonymousSharing ? 'جار مجهول' : 'مستخدم';
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmittedSuccess(true);
@@ -76,7 +76,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
       return;
     }
     setIsSubmitting(true);
-    const finalRequesterName = isAnonymousSharing ? 'جار مجهول' : 'ياسين جمال';
+    const finalRequesterName = isAnonymousSharing ? 'جار مجهول' : 'مستخدم';
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmittedSuccess(true);

@@ -16,7 +16,7 @@ export const PrivacyPledgeModal: React.FC<PrivacyPledgeModalProps> = ({
   onAcceptPledge,
 }) => {
   const [isPledged, setIsPledged] = useState(false);
-  const [donorSignature, setDonorSignature] = useState('ياسين جمال');
+  const [donorSignature, setDonorSignature] = useState('مستخدم');
 
   if (!isOpen) return null;
 

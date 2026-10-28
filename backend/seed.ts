@@ -105,9 +105,9 @@ async function main() {
 
   const homsPost2 = await prisma.post.upsert({
     where: { id: 'seed-post-homs-2' },
-    update: { title: 'عربة أطفال للإعارة', description: 'عربة أطفال بحالة جيدة لمن يحتاجها.', type: 'OFFER', category: 'مستلزمات أطفال', lat: 34.7310, lng: 36.7120 },
+    update: { title: 'عربة أطفال للإعارة', description: 'عربة أطفال بحالة جيدة لمن يحتاجها.', type: 'REQUEST', category: 'مستلزمات أطفال', lat: 34.7310, lng: 36.7120 },
     create: {
-      id: 'seed-post-homs-2', title: 'عربة أطفال للإعارة', description: 'عربة أطفال بحالة جيدة لمن يحتاجها.', category: 'مستلزمات أطفال', type: 'OFFER', urgent: false, location: 'حمص, الغوطة', lat: 34.7310, lng: 36.7120, image: 'https://images.unsplash.com/photo-1544621945-8b368db51f49?auto=format&fit=crop&w=300&q=80', userId: user.id
+      id: 'seed-post-homs-2', title: 'عربة أطفال للإعارة', description: 'عربة أطفال بحالة جيدة لمن يحتاجها.', category: 'مستلزمات أطفال', type: 'REQUEST', urgent: false, location: 'حمص, الغوطة', lat: 34.7310, lng: 36.7120, image: 'https://images.unsplash.com/photo-1544621945-8b368db51f49?auto=format&fit=crop&w=300&q=80', userId: user.id
     }
   });
 
@@ -122,9 +122,9 @@ async function main() {
 
   const hamaPost2 = await prisma.post.upsert({
     where: { id: 'seed-post-hama-2' },
-    update: { title: 'كرسي متحرك للإعارة', description: 'متوفر كرسي متحرك للمرضى وكبار السن للإعارة المؤقتة.', type: 'OFFER', category: 'مطلوب للإعارة', lat: 35.1305, lng: 36.7565 },
+    update: { title: 'كرسي متحرك للإعارة', description: 'متوفر كرسي متحرك للمرضى وكبار السن للإعارة المؤقتة.', type: 'REQUEST', category: 'مطلوب للإعارة', lat: 35.1305, lng: 36.7565 },
     create: {
-      id: 'seed-post-hama-2', title: 'كرسي متحرك للإعارة', description: 'متوفر كرسي متحرك للمرضى وكبار السن للإعارة المؤقتة.', category: 'مطلوب للإعارة', type: 'OFFER', urgent: false, location: 'حماة, الشريعة', lat: 35.1305, lng: 36.7565, image: 'https://images.unsplash.com/photo-1585806623696-654dbda41215?auto=format&fit=crop&w=300&q=80', userId: user.id
+      id: 'seed-post-hama-2', title: 'كرسي متحرك للإعارة', description: 'متوفر كرسي متحرك للمرضى وكبار السن للإعارة المؤقتة.', category: 'مطلوب للإعارة', type: 'REQUEST', urgent: false, location: 'حماة, الشريعة', lat: 35.1305, lng: 36.7565, image: 'https://images.unsplash.com/photo-1585806623696-654dbda41215?auto=format&fit=crop&w=300&q=80', userId: user.id
     }
   });
 

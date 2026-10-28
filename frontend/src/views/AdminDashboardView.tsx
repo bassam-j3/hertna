@@ -42,7 +42,7 @@ export default function AdminDashboardView() {
   // حماية المسار (Route Guard): إذا لم يكن المستخدم "لجنة" أو "مشرف"، يتم توجيهه للرئيسية
   useEffect(() => {
     if (isLoading) return;
-    if (!currentUser || (currentUser.userType !== 'committee' && currentUser.userType !== 'admin' && currentUser.userType !== 'super_admin')) {
+    if (!currentUser || (currentUser.userType !== 'committee' && currentUser.userType !== 'super_admin')) {
       navigate('/');
       return;
     }

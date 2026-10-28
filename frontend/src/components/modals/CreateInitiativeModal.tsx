@@ -13,7 +13,7 @@ export const CreateInitiativeModal: React.FC<CreateInitiativeModalProps> = ({
   isOpen,
   onClose,
   onCreateInitiative,
-  userProfileName = 'ياسين جمال',
+  userProfileName = 'مستخدم',
   userProfileAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
 }) => {
   const [title, setTitle] = useState('');

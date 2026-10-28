@@ -17,7 +17,7 @@ export const InitiativeDetailModal: React.FC<InitiativeDetailModalProps> = ({
   initiative,
   onToggleJoin,
   onOpenChat,
-  userProfileName = 'ياسين جمال',
+  userProfileName = 'مستخدم',
   isDarkMode = false,
 }) => {
   const [copied, setCopied] = useState(false);

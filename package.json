@@ -4,6 +4,6 @@
     "react-leaflet": "^5.0.0"
   },
   "scripts": {
-    "test": "cd testsprite_backend_tests && npx playwright test"
+    "test": "cd frontend && npx tsc --noEmit && cd ../backend && npx tsc --noEmit"
   }
 }

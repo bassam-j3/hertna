@@ -23,7 +23,7 @@ export class SupabaseStorageService implements StorageService {
 
   async upload(fileBuffer: Buffer, bucket: string, destinationKey: string, mimetype: string): Promise<string> {
     if (!this.supabase) {
-      throw new Error('Supabase storage not initialized');
+      throw new Error('Supabase storage not initialized — use local storage fallback');
     }
     const { error } = await this.supabase.storage
       .from(bucket)

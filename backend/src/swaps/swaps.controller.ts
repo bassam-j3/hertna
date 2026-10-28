@@ -28,9 +28,9 @@ export class SwapsController {
   @Patch(':id/status')
   updateStatus(
     @Param('id') id: string,
-    @Body('status') status: string,
+    @Body('status') status: SwapStatus,
     @Request() req,
   ) {
-    return this.swapsService.updateStatus(id, status as SwapStatus, req.user.userId);
+    return this.swapsService.updateStatus(id, status, req.user.userId);
   }
 }
