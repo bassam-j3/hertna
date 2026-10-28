@@ -206,8 +206,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   };
 
   // Calculating summary totals — real data comes from the backend; no mocks
-  const totalItemsShared = 0;
-  const totalHelps = 0;
+  // totalItemsShared and totalHelps: coming soon (no backend endpoint yet)
+  const totalItemsShared = 'coming soon';
+  const totalHelps = 'coming soon';
 
   // Profile Save Handler
   const handleSaveProfile = async (e: React.FormEvent) => {
