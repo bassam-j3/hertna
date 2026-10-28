@@ -12,10 +12,41 @@ class SwapParty {
   });
 }
 
+enum SwapStatus {
+  pending('PENDING'),
+  accepted('ACCEPTED'),
+  active('ACTIVE'),
+  completed('COMPLETED'),
+  cancelled('CANCELLED');
+
+  final String value;
+  const SwapStatus(this.value);
+
+  static SwapStatus fromString(String? value) {
+    switch (value?.toUpperCase()) {
+      case 'PENDING':
+        return SwapStatus.pending;
+      case 'ACCEPTED':
+        return SwapStatus.accepted;
+      case 'ACTIVE':
+        return SwapStatus.active;
+      case 'COMPLETED':
+        return SwapStatus.completed;
+      case 'CANCELLED':
+        return SwapStatus.cancelled;
+      default:
+        return SwapStatus.pending;
+    }
+  }
+
+  @override
+  String toString() => value;
+}
+
 class SwapItemEntity {
   final String id;
   final String title;
-  final String status; // 'PENDING', 'ACCEPTED', 'ACTIVE', 'COMPLETED', 'CANCELLED'
+  final SwapStatus status;
   final DateTime? startDate;
   final DateTime? dueDate;
   final String? postId;
@@ -35,26 +66,24 @@ class SwapItemEntity {
     required this.isLender,
   });
 
-  bool get isPending => status == 'PENDING';
-  bool get isAccepted => status == 'ACCEPTED';
-  bool get isInUse => status == 'ACTIVE';
-  bool get isCompleted => status == 'COMPLETED';
-  bool get isCancelled => status == 'CANCELLED';
+  bool get isPending => status == SwapStatus.pending;
+  bool get isAccepted => status == SwapStatus.accepted;
+  bool get isInUse => status == SwapStatus.active;
+  bool get isCompleted => status == SwapStatus.completed;
+  bool get isCancelled => status == SwapStatus.cancelled;
 
   String get statusArabic {
     switch (status) {
-      case 'PENDING':
+      case SwapStatus.pending:
         return 'بانتظار التأكيد';
-      case 'ACCEPTED':
+      case SwapStatus.accepted:
         return 'تمت الموافقة';
-      case 'ACTIVE':
+      case SwapStatus.active:
         return 'قيد التبادل / الاستخدام';
-      case 'COMPLETED':
+      case SwapStatus.completed:
         return 'مكتمل بنجاح';
-      case 'CANCELLED':
+      case SwapStatus.cancelled:
         return 'ملغي';
-      default:
-        return status;
     }
   }
 }

@@ -1,5 +1,8 @@
 import '../../domain/entities/swap.dart';
 
+// Re-export for convenience
+export '../../domain/entities/swap.dart' show SwapStatus;
+
 class SwapPartyModel extends SwapParty {
   const SwapPartyModel({
     required super.id,
@@ -56,7 +59,7 @@ class SwapModel extends SwapItemEntity {
     return SwapModel(
       id: json['id'] as String? ?? '',
       title: json['title'] as String? ?? 'مبادلة مجتمعية',
-      status: json['status'] as String? ?? 'PENDING',
+      status: SwapStatus.fromString(json['status'] as String?),
       startDate: start,
       dueDate: due,
       postId: json['postId'] as String?,

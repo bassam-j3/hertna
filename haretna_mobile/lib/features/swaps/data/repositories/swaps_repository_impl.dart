@@ -23,9 +23,9 @@ class SwapsRepositoryImpl implements SwapsRepository {
   @override
   Future<void> updateSwapStatus({
     required String id,
-    required String status,
+    required SwapStatus status,
   }) async {
-    await remoteDataSource.updateSwapStatus(id, status);
+    await remoteDataSource.updateSwapStatus(id, status.toString());
   }
 
   @override

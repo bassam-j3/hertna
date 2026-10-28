@@ -28,7 +28,7 @@ class _MySwapsScreenState extends ConsumerState<MySwapsScreen> {
 
   int _tabIndex = 0;
 
-  void _handleStatusChange(String swapId, String status) async {
+  void _handleStatusChange(String swapId, SwapStatus status) async {
     final success = await ref
         .read(swapsControllerProvider.notifier)
         .updateStatus(swapId, status);

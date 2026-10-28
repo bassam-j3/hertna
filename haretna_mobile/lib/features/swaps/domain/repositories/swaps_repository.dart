@@ -5,7 +5,7 @@ abstract class SwapsRepository {
 
   Future<void> updateSwapStatus({
     required String id,
-    required String status,
+    required SwapStatus status,
   });
 
   Future<void> createSwap({

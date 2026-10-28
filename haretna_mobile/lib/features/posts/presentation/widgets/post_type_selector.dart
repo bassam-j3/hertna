@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class PostTypeSelector extends StatelessWidget {
-  final String selectedType; // 'ALL', 'REQUEST', 'OFFER'
+  final String selectedType; // 'ALL', 'REQUEST' (demand-driven: all posts are REQUEST)
   final ValueChanged<String> onSelected;
 
   const PostTypeSelector({
@@ -24,7 +24,6 @@ class PostTypeSelector extends StatelessWidget {
         children: [
           _buildTab(context, key: 'ALL', label: 'الكل', icon: Icons.all_inclusive_rounded),
           _buildTab(context, key: 'REQUEST', label: 'طلبات مساعدة', icon: Icons.volunteer_activism_rounded),
-          _buildTab(context, key: 'OFFER', label: 'عروض وتبرع', icon: Icons.card_giftcard_rounded),
         ],
       ),
     );

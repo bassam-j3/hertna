@@ -11,7 +11,7 @@ class SwapCard extends StatelessWidget {
   final SwapItemEntity swap;
   final bool isLender;
   final bool isUpdating;
-  final void Function(String status)? onStatusChange;
+  final void Function(SwapStatus status)? onStatusChange;
 
   const SwapCard({
     super.key,
@@ -314,7 +314,7 @@ class SwapCard extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: isUpdating
                   ? null
-                  : () => onStatusChange!('ACCEPTED'),
+                  : () => onStatusChange!(SwapStatus.accepted),
               icon: const Icon(Icons.check_rounded, size: 18),
               label: const Text('قبول الطلب'),
               style: ElevatedButton.styleFrom(
@@ -332,7 +332,7 @@ class SwapCard extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: isUpdating
                   ? null
-                  : () => onStatusChange!('CANCELLED'),
+                  : () => onStatusChange!(SwapStatus.cancelled),
               icon: const Icon(Icons.close_rounded, size: 18),
               label: const Text('رفض'),
               style: OutlinedButton.styleFrom(
@@ -356,7 +356,7 @@ class SwapCard extends StatelessWidget {
         child: OutlinedButton.icon(
           onPressed: isUpdating
               ? null
-              : () => onStatusChange!('CANCELLED'),
+              : () => onStatusChange!(SwapStatus.cancelled),
           icon: const Icon(Icons.cancel_outlined, size: 18),
           label: const Text('إلغاء الطلب'),
           style: OutlinedButton.styleFrom(
@@ -377,7 +377,7 @@ class SwapCard extends StatelessWidget {
         onPressed: isUpdating
             ? null
             : () => onStatusChange!(
-                _isOverdue ? 'CANCELLED' : 'COMPLETED'),
+                _isOverdue ? SwapStatus.cancelled : SwapStatus.completed),
         icon: Icon(
           _isOverdue
               ? Icons.priority_high_rounded
@@ -403,7 +403,7 @@ class SwapCard extends StatelessWidget {
           child: ElevatedButton.icon(
             onPressed: isUpdating
                 ? null
-                : () => onStatusChange!('COMPLETED'),
+                : () => onStatusChange!(SwapStatus.completed),
             icon: const Icon(Icons.done_all_rounded, size: 18),
             label: const Text('تم الاستلام'),
             style: ElevatedButton.styleFrom(
@@ -421,7 +421,7 @@ class SwapCard extends StatelessWidget {
           child: OutlinedButton.icon(
             onPressed: isUpdating
                 ? null
-                : () => onStatusChange!('CANCELLED'),
+                : () => onStatusChange!(SwapStatus.cancelled),
             icon: const Icon(Icons.cancel_outlined, size: 18),
             label: const Text('إلغاء'),
             style: OutlinedButton.styleFrom(

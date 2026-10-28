@@ -35,7 +35,7 @@ class SwapsController extends StateNotifier<SwapsState> {
     }
   }
 
-  Future<bool> updateStatus(String swapId, String status) async {
+  Future<bool> updateStatus(String swapId, SwapStatus status) async {
     state = state.copyWith(isUpdating: true, clearError: true);
     try {
       await repository.updateSwapStatus(id: swapId, status: status);

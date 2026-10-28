@@ -62,7 +62,7 @@ class _CreatePostBottomSheetState extends ConsumerState<CreatePostBottomSheet> {
     super.dispose();
   }
 
-  bool get _isRequest => _postKind == 'request';
+  bool get _isRequest => true; // All posts are REQUEST (demand-driven)
 
   String get _type => 'REQUEST'; // All posts are REQUEST (demand-driven)
 
